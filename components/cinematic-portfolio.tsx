@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 
-const chapters = ["Enter", "My5", "NightShelf", "Weekline", "Z Kairos", "Orbit", "Studio", "Contact"];
+const chapters = ["Enter", "My5", "NightShelf", "Weekline", "Casa do Cruzeiro", "Petricor", "Férias BV", "Downloads Organizer", "Studio", "Contact"];
 
 function Kicker({ children, tone }: { children: React.ReactNode; tone?: string }) {
   return <div className="kicker" style={tone ? { color: tone } : undefined}>{children}</div>;
@@ -40,7 +40,7 @@ function Desktop({ src, alt, className = "", violet = false, label }: { src: str
   );
 }
 
-function ProjectCopy({ number, title, category, description, chips, align = "left", color }: { number: string; title: string; category: string; description: string; chips: string[]; align?: "left" | "right"; color: string }) {
+function ProjectCopy({ number, title, category, description, chips, align = "left", color, href, linkText = "Visit project" }: { number: string; title: string; category: string; description: string; chips: string[]; align?: "left" | "right"; color: string; href?: string; linkText?: string }) {
   return (
     <div className={`project-copy project-copy--${align}`}>
       <Kicker tone={color}>Project {number}</Kicker>
@@ -48,6 +48,7 @@ function ProjectCopy({ number, title, category, description, chips, align = "lef
       <div className="project-copy__category">{category}</div>
       <p>{description}</p>
       <Chips items={chips} />
+      {href ? <a className="project-copy__link" href={href} target="_blank" rel="noreferrer" data-magnetic>{linkText} <span>↗</span></a> : null}
     </div>
   );
 }
@@ -150,27 +151,45 @@ export function CinematicPortfolio() {
         .fromTo(".weekline__close", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: .09 }, .84)
         .to(".weekline__close", { opacity: 0, duration: .06 }, .94);
 
-      gsap.set(".zk__dashboard", { z: -860, rotateX: 10, rotateY: -14, opacity: 0, filter: "blur(14px)" });
-      gsap.set(".zk__pass", { z: -400, x: -180, y: 120, rotateY: 22, opacity: 0 });
-      const zk = sceneTimeline("#zkairos");
-      zk.fromTo(".zk__node", { opacity: 0, scale: .4 }, { opacity: 1, scale: 1, stagger: .022, duration: .14 }, .02)
-        .fromTo(".zk__edge", { scaleX: 0 }, { scaleX: 1, stagger: .03, duration: .18 }, .08)
-        .fromTo(".zk__note", { opacity: 0, y: 35 }, { opacity: 1, y: 0, stagger: .05, duration: .17 }, .12)
-        .to(".zk__dashboard", { z: 90, rotateX: 0, rotateY: 0, opacity: 1, filter: "blur(0px)", duration: .32 }, .3)
-        .to(".zk__note", { z: 1500 * motion, opacity: 0, stagger: .04, duration: .3 }, .46)
-        .to(".zk__pass", { z: 1100 * motion, x: 120, y: -140, rotateY: -8, opacity: 1, duration: .22 }, .58)
-        .to(".zk__pass", { opacity: 0, duration: .06 }, .76)
-        .to(".zk__dashboard", { z: -1500, opacity: 0, duration: .22 }, .78)
-        .to(".zk__node", { scale: 1.5, x: (i) => ((i % 4) - 1.5) * 90 * motion, y: (i) => (Math.floor(i / 4) - 1) * 70 * motion, stagger: .01, duration: .22 }, .78)
-        .to(".zk__edge", { opacity: .3, duration: .18 }, .78);
+      gsap.set(".casa__screen", { z: -1200, opacity: 0, filter: "blur(14px)" });
+      const casa = sceneTimeline("#casa");
+      casa.to(".casa__screen--main", { z: -50, rotateY: -4, opacity: 1, filter: "blur(0px)", duration: .3, ease: "power2.out" }, .05)
+        .to(".casa__screen--history", { x: -470 * motion, z: -480, rotateY: 18, opacity: .78, filter: "blur(1px)", duration: .26 }, .22)
+        .to(".casa__screen--projects", { x: 490 * motion, z: -620, rotateY: -18, opacity: .68, filter: "blur(2px)", duration: .26 }, .28)
+        .fromTo(".casa__year", { opacity: 0, y: 44 }, { opacity: 1, y: 0, duration: .14 }, .46)
+        .to(".casa__screen--main", { z: 330 * motion, scale: 1.06, duration: .2 }, .48)
+        .to(".casa__screen", { z: 1250 * motion, opacity: 0, filter: "blur(10px)", stagger: .035, duration: .28 }, .7)
+        .to(".casa .project-copy, .casa__year", { opacity: 0, y: -55, duration: .16 }, .79);
 
-      gsap.set(".orbit-card", { z: -1000, opacity: 0, filter: "blur(12px)" });
-      const orbit = sceneTimeline("#orbit");
-      orbit.to(".orbit-card", { z: 0, opacity: 1, filter: "blur(0px)", stagger: .06, duration: .28 }, .06)
-        .to(".orbit__track", { x: `${-42 * motion}vw`, duration: .48 }, .32)
-        .to(".orbit-card", { z: 900 * motion, opacity: 0, rotateY: (i) => i % 2 ? -10 : 10, stagger: .035, duration: .25 }, .68)
-        .fromTo(".orbit__closing", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .12 }, .82)
-        .to(".orbit__closing", { opacity: 0, duration: .08 }, .93);
+      gsap.set(".petricor__screen", { z: -1100, opacity: 0, filter: "blur(13px)" });
+      const petricor = sceneTimeline("#petricor");
+      petricor.to(".petricor__screen--main", { z: 0, rotateY: 4, opacity: 1, filter: "blur(0px)", duration: .3 }, .05)
+        .to(".petricor__screen--craft", { x: 510 * motion, y: 105, z: -430, rotateY: -16, opacity: .78, filter: "blur(1px)", duration: .28 }, .2)
+        .fromTo(".petricor__material", { opacity: 0, x: -70 }, { opacity: 1, x: 0, stagger: .05, duration: .16 }, .34)
+        .to(".petricor__world", { x: `${-12 * motion}vw`, duration: .34 }, .48)
+        .to(".petricor__screen", { y: -190, z: 980 * motion, opacity: 0, filter: "blur(9px)", stagger: .05, duration: .27 }, .71)
+        .to(".petricor .project-copy, .petricor__material", { opacity: 0, y: -45, duration: .15 }, .8);
+
+      gsap.set(".ferias__screen", { z: -1250, opacity: 0, filter: "blur(14px)" });
+      const ferias = sceneTimeline("#ferias");
+      ferias.to(".ferias__screen--calendar", { z: -40, rotateX: 2, opacity: 1, filter: "blur(0px)", duration: .3 }, .05)
+        .to(".ferias__screen--dashboard", { x: -500 * motion, z: -520, rotateY: 17, opacity: .78, filter: "blur(1px)", duration: .28 }, .18)
+        .to(".ferias__screen--properties", { x: 515 * motion, z: -660, rotateY: -18, opacity: .68, filter: "blur(2px)", duration: .28 }, .24)
+        .fromTo(".ferias__metric", { opacity: 0, y: 60, scale: .92 }, { opacity: 1, y: 0, scale: 1, stagger: .055, duration: .17 }, .36)
+        .to(".ferias__world", { x: `${-10 * motion}vw`, duration: .32 }, .48)
+        .to(".ferias__metric", { opacity: 0, y: -80, stagger: .025, duration: .14 }, .68)
+        .to(".ferias__screen", { z: 1200 * motion, opacity: 0, filter: "blur(10px)", stagger: .04, duration: .28 }, .7)
+        .to(".ferias .project-copy", { opacity: 0, y: -55, duration: .15 }, .81);
+
+      gsap.set(".downloads__screen", { z: -1200, opacity: 0, filter: "blur(14px)" });
+      const downloads = sceneTimeline("#downloads");
+      downloads.to(".downloads__screen--popover", { z: -40, rotateY: -3, opacity: 1, filter: "blur(0px)", duration: .3 }, .04)
+        .to(".downloads__screen--general", { x: -490 * motion, y: 70, z: -520, rotateY: 18, opacity: .75, filter: "blur(1px)", duration: .27 }, .2)
+        .to(".downloads__screen--rules", { x: 500 * motion, y: 105, z: -650, rotateY: -18, opacity: .68, filter: "blur(2px)", duration: .27 }, .26)
+        .fromTo(".downloads__badge", { opacity: 0, scale: .6, rotate: -12 }, { opacity: 1, scale: 1, rotate: 0, duration: .2, ease: "back.out(1.7)" }, .38)
+        .to(".downloads__screen--popover", { z: 300 * motion, duration: .2 }, .48)
+        .to(".downloads__screen", { z: 1180 * motion, opacity: 0, filter: "blur(11px)", stagger: .04, duration: .29 }, .7)
+        .to(".downloads .project-copy, .downloads__badge", { opacity: 0, y: -50, duration: .16 }, .8);
 
       const studio = sceneTimeline("#studio");
       studio.fromTo(".studio__kicker", { opacity: 0 }, { opacity: 1, duration: .12 }, .04)
@@ -277,10 +296,10 @@ export function CinematicPortfolio() {
       <section id="my5" className="scene scene--my5 my5" data-chapter="1">
         <div className="stage">
           <div className="scene-glow scene-glow--plum" /><div className="rim-disc" />
-          <ProjectCopy number="01" title="My5" category="Private emotional network" description="A private place for the five people who matter most — built around honest check-ins, emotional safety, and conversation without performance." chips={["Product design", "Mobile", "Privacy", "Full-stack engineering"]} color="#7A4DFF" />
+          <ProjectCopy number="01" title="My5" category="Private emotional network" description="A private emotional network for up to five trusted adults. Share one feeling with your circle or reach one person directly; they can answer with a bounded voice note, image, or short video — no public profiles, feed, followers, popularity metrics, or emotional-data advertising." chips={["Expo mobile", "Privacy architecture", "Supabase", "Media lifecycle"]} color="#7A4DFF" />
           <div className="device-world my5__world">
             <Phone src="/work/my5-2.png" alt="My5 circle screen" className="my5__side my5__side--a" small contain />
-            <Phone src="/work/my5-1.png" alt="My5 emotional network" className="my5__hero" contain />
+            <Phone src="/work/my5-live.jpg" alt="My5 circle and emotional check-in" className="my5__hero" />
             <Phone src="/work/my5-3.png" alt="My5 check-in screen" className="my5__side my5__side--b" small contain />
           </div>
           <span className="depth-word my5__depth depth-word--a">private</span><span className="depth-word my5__depth depth-word--b">trusted</span><span className="depth-word my5__depth depth-word--c">quiet</span>
@@ -291,7 +310,7 @@ export function CinematicPortfolio() {
       <section id="nightshelf" className="scene scene--night ns" data-chapter="2">
         <div className="stage">
           <div className="scene-glow scene-glow--magenta" /><div className="ns__incoming" />
-          <ProjectCopy number="02" title="NightShelf" category="Personal media library" description="A nocturnal home for everything you want to watch, read, and remember — discovery and tracking without the streaming-service noise." chips={["Product strategy", "Web application", "Mobile", "Identity"]} align="right" color="#D48CFF" />
+          <ProjectCopy number="02" title="NightShelf" category="A personal media library" description="One quiet shelf for films, series, anime, and books. NightShelf combines discovery, a personal queue, progress tracking, and a record of what mattered — designed around the person collecting, not an algorithm competing for attention." chips={["Product strategy", "Cross-media library", "Mobile-first UI", "Identity"]} align="right" color="#D48CFF" />
           <div className="device-world ns__world">
             {[5,6,7,8,2].map((n,i)=><Image width={1170} height={2532} className={`ns__panel ns__panel--${i}`} src={`/work/ns-${n}.png`} alt="" key={`${n}-${i}`} />)}
             <Phone src="/work/ns-1.png" alt="NightShelf library" className="ns__phone" />
@@ -305,7 +324,7 @@ export function CinematicPortfolio() {
 
       <section id="weekline" className="scene scene--week weekline" data-chapter="3">
         <div className="stage">
-          <ProjectCopy number="03" title="Weekline" category="Focus and work journal" description="A weekly view that turns scattered work into visible momentum — priorities, notes, shipped work, and reflection in one calm system." chips={["Product design", "Analytics", "Next.js", "Workflow systems"]} align="right" color="#9BC4FF" />
+          <ProjectCopy number="03" title="Weekline" category="Focus and work journal" description="A work journal built around the week rather than an endless task list. It connects daily focus, project notes, time, and shipped outcomes so progress is visible while the work is happening — and useful when it is time to reflect." chips={["Product design", "Weekly analytics", "Next.js", "Workflow systems"]} align="right" color="#9BC4FF" />
           <div className="weekline__set">
             <div className="weekline__rail" />
             <div className="weekline__timeline">
@@ -321,35 +340,58 @@ export function CinematicPortfolio() {
         </div>
       </section>
 
-      <section id="zkairos" className="scene scene--zk zk" data-chapter="4">
+      <section id="casa" className="scene scene--casa showcase casa" data-chapter="4">
         <div className="stage">
-          <ProjectCopy number="04 · Ongoing" title="Z Kairos" category="Personal operating system" description="A living operating system for tasks, routines, finances, reviews, and knowledge — designed to make the whole of life easier to see." chips={["Systems design", "Obsidian", "Automation", "Knowledge management"]} color="#B9A8FF" />
-          <div className="zk__network">
-            {Array.from({length:12},(_,i)=><i className="zk__node" key={i} style={{left:`${12+(i*31)%78}%`,top:`${12+(i*47)%74}%`}} />)}
-            {[24,-32,52,-14,-46,78].map((r,i)=><i className="zk__edge" key={r} style={{left:`${18+i*11}%`,top:`${22+(i*13)%56}%`,transform:`rotate(${r}deg)`}} />)}
+          <div className="showcase__glow showcase__glow--casa" />
+          <ProjectCopy number="04" title="Casa do Cruzeiro" category="A digital home for living heritage" description="A bilingual editorial and hospitality website for the Casa de Nossa Senhora da Piedade in Ponte de Lima. It brings together five centuries of family history, classified architecture, accommodation, a living archive, and ongoing preservation projects without reducing the place to a booking page." chips={["Bilingual experience", "Storyblok CMS", "Editorial design", "Next.js"]} color="#C9B58A" href="https://www.casadapiedade.pt" linkText="Visit Casa do Cruzeiro" />
+          <div className="showcase__world casa__world">
+            <Desktop src="/work/casa-cruzeiro-history.jpg" alt="Casa do Cruzeiro history page" className="showcase__screen casa__screen casa__screen--history" label="History · 1524 → today" />
+            <Desktop src="/work/casa-cruzeiro-home.jpg" alt="Casa do Cruzeiro website home page" className="showcase__screen showcase__screen--main casa__screen casa__screen--main" label="casadapiedade.pt" />
+            <Desktop src="/work/casa-cruzeiro-projects.jpg" alt="Casa do Cruzeiro archive and digitisation project" className="showcase__screen casa__screen casa__screen--projects" label="Archive · transcription · digitisation" />
           </div>
-          <div className="device-world zk__world">
-            <Desktop src="/work/zkairos-dashboard.webp" alt="Z Kairos dashboard" className="zk__dashboard" violet label="Z Kairos" />
-            <div className="zk__pass"><Image src="/work/zkairos-dashboard.webp" alt="Z Kairos system view" fill sizes="520px" /><span>Weekly review / 34</span></div>
-            {["Routines","Finances","Weekly review","Tasks"].map((x,i)=><div className={`zk__note zk__note--${i}`} key={x}><span>0{i+1}</span><b>{x}</b><i /></div>)}
-          </div>
+          <div className="casa__year"><b>1524</b><span>A place with a memory longer than the interface.</span></div>
         </div>
       </section>
 
-      <section id="orbit" className="scene scene--orbit orbit" data-chapter="5">
+      <section id="petricor" className="scene scene--petricor showcase petricor" data-chapter="5">
         <div className="stage">
-          <div className="orbit__intro"><Kicker>Selected satellites</Kicker><h2>Other things<br /><span>in orbit.</span></h2><p>Websites, utilities, and operational systems — each made close to the problem.</p></div>
-          <div className="orbit__track">
-            <article className="orbit-card orbit-card--0"><Desktop src="/work/downloads-organizer.webp" alt="macOS Downloads Organizer" label="Downloads Organizer" /><div><span>macOS utility · 2026</span><h3>Downloads Organizer</h3><p>A native-feeling tool that quietly keeps a busy Downloads folder under control.</p></div></article>
-            <article className="orbit-card orbit-card--1"><Desktop src="/work/petricor-site.webp" alt="Petricor website" label="petricor.pt" /><div><span>Commerce · Craft</span><h3>Petricor</h3><p>A tactile digital storefront for hand-made pieces, designed around material and process.</p><a href="https://petricor.pt" target="_blank" rel="noreferrer" data-magnetic>Visit site ↗</a></div></article>
-            <article className="orbit-card orbit-card--2"><Desktop src="/work/casa-piedade-site.webp" alt="Casa de Nossa Senhora da Piedade website" label="casadapiedade.pt" /><div><span>Hospitality · Editorial</span><h3>Casa da Piedade</h3><p>A calm, image-led home for a historic place in the Azores.</p><a href="https://www.casadapiedade.pt" target="_blank" rel="noreferrer" data-magnetic>Visit site ↗</a></div></article>
-            <article className="orbit-card orbit-card--3"><Desktop src="/work/ferias-dashboard.webp" alt="Property management system" label="Property operations" /><div><span>Operations · Full stack</span><h3>Property Management</h3><p>Bookings, calendars, arrivals, and daily operations brought into one clear view.</p><a href="https://feriasbv.com" target="_blank" rel="noreferrer" data-magnetic>Visit site ↗</a></div></article>
+          <div className="showcase__glow showcase__glow--petricor" />
+          <ProjectCopy number="05" title="Petricor" category="Handcrafted woodwork portfolio" description="An image-led portfolio for a woodworking practice where material, joinery, and process carry more weight than sales chrome. The site gives custom furniture and functional objects room to breathe, while a structured work catalogue makes projects easy to explore and maintain." chips={["Brand direction", "Art direction", "Responsive web", "Next.js"]} color="#D6A45D" href="https://petricor.pt" linkText="Visit Petricor" />
+          <div className="showcase__world petricor__world">
+            <Desktop src="/work/petricor-site.webp" alt="Petricor woodworking portfolio" className="showcase__screen showcase__screen--main petricor__screen petricor__screen--main" label="petricor.pt" />
+            <Desktop src="/work/petricor-craft.webp" alt="Petricor project and craft detail" className="showcase__screen petricor__screen petricor__screen--craft" label="Material · process · object" />
           </div>
-          <div className="orbit__closing">Different scales. The same care.</div>
+          <div className="petricor__materials"><span className="petricor__material">wood</span><span className="petricor__material">grain</span><span className="petricor__material">joinery</span></div>
         </div>
       </section>
 
-      <section id="studio" className="scene scene--studio studio" data-chapter="6">
+      <section id="ferias" className="scene scene--ferias showcase ferias" data-chapter="6">
+        <div className="stage">
+          <div className="showcase__glow showcase__glow--ferias" />
+          <ProjectCopy number="06" title="Férias BV" category="Property operations in one view" description="A full property-management workspace for the daily reality behind short stays: occupancy, revenue, costs, arrivals, departures, guests, and multiple properties. A lane-packed calendar keeps overlapping bookings legible, while live pricing, status, and notes stay close to each reservation." chips={["Product design", "Next.js", "Supabase", "Secure multi-property data"]} align="right" color="#79E0C0" href="https://feriasbv.com" linkText="Visit Férias BV" />
+          <div className="showcase__world ferias__world">
+            <Desktop src="/work/ferias-dashboard-current.jpg" alt="Férias BV operating dashboard" className="showcase__screen ferias__screen ferias__screen--dashboard" label="Dashboard · arrivals · financials" />
+            <Desktop src="/work/ferias-calendar-current.jpg" alt="Férias BV visual booking calendar" className="showcase__screen showcase__screen--main ferias__screen ferias__screen--calendar" label="Monthly booking calendar" />
+            <Desktop src="/work/ferias-properties-current.jpg" alt="Férias BV property and rate management" className="showcase__screen ferias__screen ferias__screen--properties" label="Properties · rates · costs" />
+          </div>
+          <div className="ferias__metrics"><span className="ferias__metric"><b>3</b> calendar views</span><span className="ferias__metric"><b>5</b> booking states</span><span className="ferias__metric"><b>1</b> operating picture</span></div>
+        </div>
+      </section>
+
+      <section id="downloads" className="scene scene--downloads showcase downloads" data-chapter="7">
+        <div className="stage">
+          <div className="showcase__glow showcase__glow--downloads" />
+          <ProjectCopy number="07" title="Downloads Organizer" category="Native macOS automation you can trust" description="A menu-bar utility that watches local folders and applies ordered rules to rename and move finished downloads. It starts in dry-run, ignores incomplete files, records every real action, and makes it undoable — with multi-folder support, reusable presets, rule previews, and local-only processing." chips={["SwiftUI", "SwiftData", "FSEvents", "Safety-first automation"]} color="#79B8FF" />
+          <div className="showcase__world downloads__world">
+            <Desktop src="/work/downloads-general.jpg" alt="Downloads Organizer general settings" className="showcase__screen downloads__screen downloads__screen--general" label="General · local file processing" />
+            <Desktop src="/work/downloads-popover.jpg" alt="Downloads Organizer menu-bar utility" className="showcase__screen showcase__screen--main downloads__screen downloads__screen--popover" label="Downloads Organizer · live" />
+            <Desktop src="/work/downloads-rules.jpg" alt="Downloads Organizer rules and preset packs" className="showcase__screen downloads__screen downloads__screen--rules" label="Rules · previews · presets" />
+          </div>
+          <div className="downloads__badge"><Image src="/work/downloads-organizer-icon.webp" alt="Downloads Organizer app icon" width={112} height={112} /><span>Local files.<br />Reversible actions.</span></div>
+        </div>
+      </section>
+
+      <section id="studio" className="scene scene--studio studio" data-chapter="8">
         <div className="stage"><div className="studio__light" />
           <div className="studio__content"><Kicker><span className="studio__kicker">The studio</span></Kicker>
             <div className="studio__reveal"><div><h2>A studio name for one person</h2></div><div><h2>who likes making the whole thing.</h2></div><div className="studio__paragraph"><p>Quit Stack Labs is José Queiroz’s independent product practice — a place for turning stubborn problems into thoughtful, useful software.</p></div><div className="studio__paragraph"><p>I work across strategy, systems, interface, interaction, and engineering. The interesting part is rarely one layer. It is how all of them meet.</p></div></div>
@@ -358,7 +400,7 @@ export function CinematicPortfolio() {
         </div>
       </section>
 
-      <section id="contact" className="scene scene--contact contact" data-chapter="7">
+      <section id="contact" className="scene scene--contact contact" data-chapter="9">
         <div className="stage"><div className="contact__points">{Array.from({length:7},(_,i)=><i key={i} style={{left:`${12+(i*19)%78}%`,top:`${14+(i*29)%70}%`}} />)}</div>
           <div className="contact__content"><Kicker>Contact</Kicker><div className="contact__reveal"><div><h2>Have a problem worth</h2></div><div><h2>getting close to?</h2></div></div><p className="contact__copy">I’m interested in thoughtful products, unusual systems, and ideas that deserve a clearer shape.</p>
             <div className="contact__links"><a href="mailto:zemqueiroz@gmail.com" data-magnetic><span>01</span>Email<i>↗</i></a><a href="https://github.com/josequeiroz" target="_blank" rel="noreferrer" data-magnetic><span>02</span>GitHub<i>↗</i></a><a href="https://www.linkedin.com/in/josequeiroz/" target="_blank" rel="noreferrer" data-magnetic><span>03</span>LinkedIn<i>↗</i></a></div>
