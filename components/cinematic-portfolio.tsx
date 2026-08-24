@@ -12,10 +12,6 @@ function Kicker({ children, tone }: { children: React.ReactNode; tone?: string }
   return <div className="kicker" style={tone ? { color: tone } : undefined}>{children}</div>;
 }
 
-function Chips({ items }: { items: string[] }) {
-  return <div className="chips">{items.map((item) => <span key={item}>{item}</span>)}</div>;
-}
-
 function Phone({ src, alt, className = "", small = false, contain = false }: { src: string; alt: string; className?: string; small?: boolean; contain?: boolean }) {
   return (
     <div className={`phone ${small ? "phone--small" : ""} ${className}`}>
@@ -40,14 +36,21 @@ function Desktop({ src, alt, className = "", violet = false, label }: { src: str
   );
 }
 
-function ProjectCopy({ number, title, category, description, chips, align = "left", color, href, linkText = "Visit project" }: { number: string; title: string; category: string; description: string; chips: string[]; align?: "left" | "right"; color: string; href?: string; linkText?: string }) {
+function PortraitScreen({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
+  return <figure className={`portrait-screen ${className}`}><Image src={src} alt={alt} fill sizes="(max-width: 600px) 44vw, 360px" /></figure>;
+}
+
+function FloatingPhoto({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
+  return <figure className={`floating-photo ${className}`}><Image src={src} alt={alt} fill sizes="(max-width: 820px) 38vw, 320px" /></figure>;
+}
+
+function ProjectCopy({ number, title, category, description, align = "left", color, href, linkText = "Visit project" }: { number: string; title: string; category: string; description: string; align?: "left" | "right"; color: string; href?: string; linkText?: string }) {
   return (
     <div className={`project-copy project-copy--${align}`}>
       <Kicker tone={color}>Project {number}</Kicker>
       <h2>{title}</h2>
       <div className="project-copy__category">{category}</div>
       <p>{description}</p>
-      <Chips items={chips} />
       {href ? <a className="project-copy__link" href={href} target="_blank" rel="noreferrer" data-magnetic>{linkText} <span>↗</span></a> : null}
     </div>
   );
@@ -135,39 +138,48 @@ export function CinematicPortfolio() {
         .to(".ns__identity", { opacity: 0, duration: .08 }, .92)
         .to(".ns__line", { scaleX: 1, opacity: 1, duration: .08 }, .92);
 
-      gsap.set(".weekline__phone", { y: 420, z: -420, rotateY: 18, opacity: 0, filter: "blur(10px)" });
-      gsap.set(".weekline__desktop", { x: 300, z: -700, rotateY: -20, opacity: 0, filter: "blur(12px)" });
+      gsap.set(".weekline__screen", { z: -1300, opacity: 0, filter: "blur(12px)" });
       const week = sceneTimeline("#weekline");
       week.to(".weekline__rail", { scaleX: 1, duration: .25 }, .05)
         .fromTo(".weekline__tick", { opacity: 0, y: 30 }, { opacity: 1, y: 0, stagger: .035, duration: .16 }, .1)
         .fromTo(".weekline__block", { scaleX: 0 }, { scaleX: 1, stagger: .028, duration: .12 }, .2)
-        .to(".weekline__phone", { y: 0, z: -20, rotateY: 0, opacity: 1, filter: "blur(0px)", duration: .26 }, .18)
-        .to(".weekline__desktop", { x: 0, z: -100, rotateY: 0, opacity: 1, filter: "blur(0px)", duration: .26 }, .26)
-        .fromTo(".weekline__float", { opacity: 0, y: 80 }, { opacity: 1, y: 0, stagger: .06, duration: .18 }, .22)
-        .to(".weekline__set", { x: `${-26 * motion}vw`, duration: .34 }, .5)
-        .to(".weekline__float", { x: -180, y: -100, z: -200, opacity: 0, stagger: .025, duration: .17 }, .78)
-        .to(".weekline__phone", { y: -500, opacity: 0, duration: .16 }, .82)
-        .to(".weekline__desktop", { z: 160, opacity: 0, duration: .16 }, .8)
+        .to(".weekline__screen--focus", { z: 80, rotateY: 0, opacity: 1, filter: "blur(0px)", duration: .28, ease: "power2.out" }, .14)
+        .to(".weekline__screen--report", { x: -410 * motion, y: -65, z: -360, rotateY: 18, opacity: .82, filter: "blur(0px)", duration: .27 }, .24)
+        .to(".weekline__screen--export", { x: 415 * motion, y: 45, z: -430, rotateY: -18, opacity: .76, filter: "blur(1px)", duration: .27 }, .28)
+        .to(".weekline__screen--projects", { x: -690 * motion, y: 115, z: -760, rotateY: 24, opacity: .52, filter: "blur(2px)", duration: .25 }, .34)
+        .to(".weekline__screen--motion", { x: 690 * motion, y: -120, z: -820, rotateY: -24, opacity: .46, filter: "blur(3px)", duration: .25 }, .37)
+        .to(".weekline__screen--themes", { x: 120, y: -310, z: -720, rotateX: -9, opacity: .44, filter: "blur(2px)", duration: .25 }, .4)
+        .to(".weekline__gallery", { x: `${-10 * motion}vw`, rotateY: -4, duration: .3 }, .5)
+        .to(".weekline__screen--focus", { z: 380 * motion, scale: 1.05, duration: .18 }, .58)
+        .to(".weekline__screen", { y: -240, z: 1250 * motion, opacity: 0, filter: "blur(10px)", stagger: .025, duration: .3 }, .72)
         .fromTo(".weekline__close", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: .09 }, .84)
         .to(".weekline__close", { opacity: 0, duration: .06 }, .94);
 
       gsap.set(".casa__screen", { z: -1200, opacity: 0, filter: "blur(14px)" });
+      gsap.set(".casa__photo", { z: -900, opacity: 0, filter: "blur(8px)" });
       const casa = sceneTimeline("#casa");
       casa.to(".casa__screen--main", { z: -50, rotateY: -4, opacity: 1, filter: "blur(0px)", duration: .3, ease: "power2.out" }, .05)
         .to(".casa__screen--history", { x: -470 * motion, z: -480, rotateY: 18, opacity: .78, filter: "blur(1px)", duration: .26 }, .22)
         .to(".casa__screen--projects", { x: 490 * motion, z: -620, rotateY: -18, opacity: .68, filter: "blur(2px)", duration: .26 }, .28)
+        .to(".casa__photo--property", { x: -570 * motion, y: 210, z: -320, rotateZ: -7, opacity: .86, filter: "blur(0px)", duration: .22 }, .34)
+        .to(".casa__photo--pool", { x: 590 * motion, y: -215, z: -500, rotateZ: 8, opacity: .76, filter: "blur(0px)", duration: .22 }, .38)
+        .to(".casa__photo--heritage", { x: 430 * motion, y: 245, z: -700, rotateZ: -5, opacity: .62, filter: "blur(1px)", duration: .22 }, .41)
         .fromTo(".casa__year", { opacity: 0, y: 44 }, { opacity: 1, y: 0, duration: .14 }, .46)
         .to(".casa__screen--main", { z: 330 * motion, scale: 1.06, duration: .2 }, .48)
-        .to(".casa__screen", { z: 1250 * motion, opacity: 0, filter: "blur(10px)", stagger: .035, duration: .28 }, .7)
+        .to(".casa__screen, .casa__photo", { z: 1250 * motion, opacity: 0, filter: "blur(10px)", stagger: .025, duration: .28 }, .7)
         .to(".casa .project-copy, .casa__year", { opacity: 0, y: -55, duration: .16 }, .79);
 
       gsap.set(".petricor__screen", { z: -1100, opacity: 0, filter: "blur(13px)" });
+      gsap.set(".petricor__photo", { z: -1000, opacity: 0, filter: "blur(9px)" });
       const petricor = sceneTimeline("#petricor");
       petricor.to(".petricor__screen--main", { z: 0, rotateY: 4, opacity: 1, filter: "blur(0px)", duration: .3 }, .05)
         .to(".petricor__screen--craft", { x: 510 * motion, y: 105, z: -430, rotateY: -16, opacity: .78, filter: "blur(1px)", duration: .28 }, .2)
+        .to(".petricor__photo--table", { x: -575 * motion, y: -190, z: -470, rotateZ: -8, opacity: .82, filter: "blur(0px)", duration: .23 }, .25)
+        .to(".petricor__photo--joinery", { x: -490 * motion, y: 230, z: -620, rotateZ: 7, opacity: .68, filter: "blur(1px)", duration: .23 }, .3)
+        .to(".petricor__photo--chair", { x: 600 * motion, y: -225, z: -720, rotateZ: -6, opacity: .6, filter: "blur(1px)", duration: .23 }, .34)
         .fromTo(".petricor__material", { opacity: 0, x: -70 }, { opacity: 1, x: 0, stagger: .05, duration: .16 }, .34)
         .to(".petricor__world", { x: `${-12 * motion}vw`, duration: .34 }, .48)
-        .to(".petricor__screen", { y: -190, z: 980 * motion, opacity: 0, filter: "blur(9px)", stagger: .05, duration: .27 }, .71)
+        .to(".petricor__screen, .petricor__photo", { y: -190, z: 980 * motion, opacity: 0, filter: "blur(9px)", stagger: .035, duration: .27 }, .71)
         .to(".petricor .project-copy, .petricor__material", { opacity: 0, y: -45, duration: .15 }, .8);
 
       gsap.set(".ferias__screen", { z: -1250, opacity: 0, filter: "blur(14px)" });
@@ -175,6 +187,8 @@ export function CinematicPortfolio() {
       ferias.to(".ferias__screen--calendar", { z: -40, rotateX: 2, opacity: 1, filter: "blur(0px)", duration: .3 }, .05)
         .to(".ferias__screen--dashboard", { x: -500 * motion, z: -520, rotateY: 17, opacity: .78, filter: "blur(1px)", duration: .28 }, .18)
         .to(".ferias__screen--properties", { x: 515 * motion, z: -660, rotateY: -18, opacity: .68, filter: "blur(2px)", duration: .28 }, .24)
+        .to(".ferias__screen--year", { x: -360 * motion, y: -285, z: -760, rotateX: -8, opacity: .52, filter: "blur(2px)", duration: .25 }, .3)
+        .to(".ferias__screen--guests", { x: 390 * motion, y: 285, z: -820, rotateX: 8, opacity: .48, filter: "blur(3px)", duration: .25 }, .34)
         .fromTo(".ferias__metric", { opacity: 0, y: 60, scale: .92 }, { opacity: 1, y: 0, scale: 1, stagger: .055, duration: .17 }, .36)
         .to(".ferias__world", { x: `${-10 * motion}vw`, duration: .32 }, .48)
         .to(".ferias__metric", { opacity: 0, y: -80, stagger: .025, duration: .14 }, .68)
@@ -236,6 +250,10 @@ export function CinematicPortfolio() {
       halo?.style.setProperty("transform", `translate3d(${hx - 140}px,${hy - 140}px,0)`);
       root.style.setProperty("--mouse-x", `${(px / innerWidth - .5) * 2}`);
       root.style.setProperty("--mouse-y", `${(py / innerHeight - .5) * 2}`);
+      root.style.setProperty("--parallax-x", `${(px / innerWidth - .5) * 34}px`);
+      root.style.setProperty("--parallax-y", `${(py / innerHeight - .5) * 24}px`);
+      root.style.setProperty("--parallax-x-soft", `${(px / innerWidth - .5) * 12}px`);
+      root.style.setProperty("--parallax-y-soft", `${(py / innerHeight - .5) * 9}px`);
       pointerRaf = requestAnimationFrame(pointerTick);
     };
     if (!coarse && !reduced) { window.addEventListener("pointermove", onPointer); pointerRaf = requestAnimationFrame(pointerTick); }
@@ -296,7 +314,7 @@ export function CinematicPortfolio() {
       <section id="my5" className="scene scene--my5 my5" data-chapter="1">
         <div className="stage">
           <div className="scene-glow scene-glow--plum" /><div className="rim-disc" />
-          <ProjectCopy number="01" title="My5" category="Private emotional network" description="A private emotional network for up to five trusted adults. Share one feeling with your circle or reach one person directly; they can answer with a bounded voice note, image, or short video — no public profiles, feed, followers, popularity metrics, or emotional-data advertising." chips={["Expo mobile", "Privacy architecture", "Supabase", "Media lifecycle"]} color="#7A4DFF" />
+          <ProjectCopy number="01" title="My5" category="Private emotional network" description="A private emotional network for up to five trusted adults. Share one feeling with your circle or reach one person directly; they can answer with a bounded voice note, image, or short video — no public profiles, feed, followers, popularity metrics, or emotional-data advertising." color="#7A4DFF" />
           <div className="device-world my5__world">
             <Phone src="/work/my5-2.png" alt="My5 circle screen" className="my5__side my5__side--a" small contain />
             <Phone src="/work/my5-live.jpg" alt="My5 circle and emotional check-in" className="my5__hero" />
@@ -310,7 +328,7 @@ export function CinematicPortfolio() {
       <section id="nightshelf" className="scene scene--night ns" data-chapter="2">
         <div className="stage">
           <div className="scene-glow scene-glow--magenta" /><div className="ns__incoming" />
-          <ProjectCopy number="02" title="NightShelf" category="A personal media library" description="One quiet shelf for films, series, anime, and books. NightShelf combines discovery, a personal queue, progress tracking, and a record of what mattered — designed around the person collecting, not an algorithm competing for attention." chips={["Product strategy", "Cross-media library", "Mobile-first UI", "Identity"]} align="right" color="#D48CFF" />
+          <ProjectCopy number="02" title="NightShelf" category="A personal media library" description="One quiet shelf for films, series, anime, and books. NightShelf combines discovery, a personal queue, progress tracking, and a record of what mattered — designed around the person collecting, not an algorithm competing for attention." align="right" color="#D48CFF" />
           <div className="device-world ns__world">
             {[5,6,7,8,2].map((n,i)=><Image width={1170} height={2532} className={`ns__panel ns__panel--${i}`} src={`/work/ns-${n}.png`} alt="" key={`${n}-${i}`} />)}
             <Phone src="/work/ns-1.png" alt="NightShelf library" className="ns__phone" />
@@ -324,17 +342,20 @@ export function CinematicPortfolio() {
 
       <section id="weekline" className="scene scene--week weekline" data-chapter="3">
         <div className="stage">
-          <ProjectCopy number="03" title="Weekline" category="Focus and work journal" description="A work journal built around the week rather than an endless task list. It connects daily focus, project notes, time, and shipped outcomes so progress is visible while the work is happening — and useful when it is time to reflect." chips={["Product design", "Weekly analytics", "Next.js", "Workflow systems"]} align="right" color="#9BC4FF" />
+          <ProjectCopy number="03" title="Weekline" category="Focus and work journal" description="A work journal built around the week rather than an endless task list. Focus sessions become a readable weekly record, with project context, self-review, shareable summaries, and a clear view of what actually moved." align="right" color="#9BC4FF" />
           <div className="weekline__set">
             <div className="weekline__rail" />
             <div className="weekline__timeline">
               {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((day,i)=><div className="weekline__tick" style={{ left:`${8+i*14}%` }} key={day}><span>{day}</span><i className="weekline__block" /><i className="weekline__block weekline__block--two" /></div>)}
             </div>
-            <Phone src="/work/weekline-login.webp" alt="Weekline mobile experience" className="weekline__phone" contain />
-            <Desktop src="/work/weekline-welcome.webp" alt="Weekline desktop experience" className="weekline__desktop" />
-            <div className="weekline__float weekline__chart"><span>Week 34</span>{[46,70,58,91,76,34,21].map((h,i)=><i key={i} style={{height:`${h}%`}} />)}</div>
-            <div className="weekline__float weekline__project"><span>Focus</span><b>Portfolio motion system</b><em>03:42:18</em></div>
-            <div className="weekline__float weekline__shipped"><span>Shipped</span><b>3</b><em>this week</em></div>
+            <div className="weekline__gallery">
+              <PortraitScreen src="/work/weekline-834.jpg" alt="Weekline projects view" className="weekline__screen weekline__screen--projects" />
+              <PortraitScreen src="/work/weekline-832.jpg" alt="Weekline weekly report" className="weekline__screen weekline__screen--report" />
+              <PortraitScreen src="/work/weekline-830.jpg" alt="Weekline focus timer" className="weekline__screen weekline__screen--focus" />
+              <PortraitScreen src="/work/weekline-833.jpg" alt="Weekline export studio" className="weekline__screen weekline__screen--export" />
+              <PortraitScreen src="/work/weekline-835.jpg" alt="Weekline motion background settings" className="weekline__screen weekline__screen--motion" />
+              <PortraitScreen src="/work/weekline-836.jpg" alt="Weekline colour themes" className="weekline__screen weekline__screen--themes" />
+            </div>
           </div>
           <div className="weekline__close">Know exactly what you shipped this week.</div>
         </div>
@@ -343,8 +364,11 @@ export function CinematicPortfolio() {
       <section id="casa" className="scene scene--casa showcase casa" data-chapter="4">
         <div className="stage">
           <div className="showcase__glow showcase__glow--casa" />
-          <ProjectCopy number="04" title="Casa do Cruzeiro" category="A digital home for living heritage" description="A bilingual editorial and hospitality website for the Casa de Nossa Senhora da Piedade in Ponte de Lima. It brings together five centuries of family history, classified architecture, accommodation, a living archive, and ongoing preservation projects without reducing the place to a booking page." chips={["Bilingual experience", "Storyblok CMS", "Editorial design", "Next.js"]} color="#C9B58A" href="https://www.casadapiedade.pt" linkText="Visit Casa do Cruzeiro" />
+          <ProjectCopy number="04" title="Casa do Cruzeiro" category="A digital home for living heritage" description="A bilingual editorial and hospitality website for the Casa de Nossa Senhora da Piedade in Ponte de Lima. It brings together five centuries of family history, classified architecture, accommodation, a living archive, and ongoing preservation projects without reducing the place to a booking page." color="#C9B58A" href="https://www.casadapiedade.pt" linkText="Visit Casa do Cruzeiro" />
           <div className="showcase__world casa__world">
+            <FloatingPhoto src="/work/casa-property.jpg" alt="Casa do Cruzeiro exterior and gardens" className="casa__photo casa__photo--property" />
+            <FloatingPhoto src="/work/casa-pool.jpg" alt="Casa do Cruzeiro pool and landscape" className="casa__photo casa__photo--pool" />
+            <FloatingPhoto src="/work/casa-heritage.jpg" alt="Casa do Cruzeiro historic architectural detail" className="casa__photo casa__photo--heritage" />
             <Desktop src="/work/casa-cruzeiro-history.jpg" alt="Casa do Cruzeiro history page" className="showcase__screen casa__screen casa__screen--history" label="History · 1524 → today" />
             <Desktop src="/work/casa-cruzeiro-home.jpg" alt="Casa do Cruzeiro website home page" className="showcase__screen showcase__screen--main casa__screen casa__screen--main" label="casadapiedade.pt" />
             <Desktop src="/work/casa-cruzeiro-projects.jpg" alt="Casa do Cruzeiro archive and digitisation project" className="showcase__screen casa__screen casa__screen--projects" label="Archive · transcription · digitisation" />
@@ -356,8 +380,11 @@ export function CinematicPortfolio() {
       <section id="petricor" className="scene scene--petricor showcase petricor" data-chapter="5">
         <div className="stage">
           <div className="showcase__glow showcase__glow--petricor" />
-          <ProjectCopy number="05" title="Petricor" category="Handcrafted woodwork portfolio" description="An image-led portfolio for a woodworking practice where material, joinery, and process carry more weight than sales chrome. The site gives custom furniture and functional objects room to breathe, while a structured work catalogue makes projects easy to explore and maintain." chips={["Brand direction", "Art direction", "Responsive web", "Next.js"]} color="#D6A45D" href="https://petricor.pt" linkText="Visit Petricor" />
+          <ProjectCopy number="05" title="Petricor" category="Handcrafted woodwork portfolio" description="An image-led portfolio for a woodworking practice where material, joinery, and process carry more weight than sales chrome. The site gives custom furniture and functional objects room to breathe, while a structured work catalogue makes projects easy to explore and maintain." color="#D6A45D" href="https://petricor.pt" linkText="Visit Petricor" />
           <div className="showcase__world petricor__world">
+            <FloatingPhoto src="/work/petricor-table.jpg" alt="Petricor handcrafted table" className="petricor__photo petricor__photo--table" />
+            <FloatingPhoto src="/work/petricor-joinery.jpg" alt="Petricor joinery detail" className="petricor__photo petricor__photo--joinery" />
+            <FloatingPhoto src="/work/petricor-chair.jpg" alt="Petricor handcrafted chair" className="petricor__photo petricor__photo--chair" />
             <Desktop src="/work/petricor-site.webp" alt="Petricor woodworking portfolio" className="showcase__screen showcase__screen--main petricor__screen petricor__screen--main" label="petricor.pt" />
             <Desktop src="/work/petricor-craft.webp" alt="Petricor project and craft detail" className="showcase__screen petricor__screen petricor__screen--craft" label="Material · process · object" />
           </div>
@@ -368,11 +395,13 @@ export function CinematicPortfolio() {
       <section id="ferias" className="scene scene--ferias showcase ferias" data-chapter="6">
         <div className="stage">
           <div className="showcase__glow showcase__glow--ferias" />
-          <ProjectCopy number="06" title="Férias BV" category="Property operations in one view" description="A full property-management workspace for the daily reality behind short stays: occupancy, revenue, costs, arrivals, departures, guests, and multiple properties. A lane-packed calendar keeps overlapping bookings legible, while live pricing, status, and notes stay close to each reservation." chips={["Product design", "Next.js", "Supabase", "Secure multi-property data"]} align="right" color="#79E0C0" href="https://feriasbv.com" linkText="Visit Férias BV" />
+          <ProjectCopy number="06" title="Férias BV" category="Property operations in one view" description="A full property-management workspace for the daily reality behind short stays: occupancy, revenue, costs, arrivals, departures, guests, and multiple properties. A lane-packed calendar keeps overlapping bookings legible, while live pricing, status, and notes stay close to each reservation." align="right" color="#79E0C0" href="https://feriasbv.com" linkText="Visit Férias BV" />
           <div className="showcase__world ferias__world">
+            <Desktop src="/work/ferias-year-current.jpg" alt="Férias BV annual occupancy calendar" className="showcase__screen ferias__screen ferias__screen--year" label="Year · occupancy patterns" />
             <Desktop src="/work/ferias-dashboard-current.jpg" alt="Férias BV operating dashboard" className="showcase__screen ferias__screen ferias__screen--dashboard" label="Dashboard · arrivals · financials" />
             <Desktop src="/work/ferias-calendar-current.jpg" alt="Férias BV visual booking calendar" className="showcase__screen showcase__screen--main ferias__screen ferias__screen--calendar" label="Monthly booking calendar" />
             <Desktop src="/work/ferias-properties-current.jpg" alt="Férias BV property and rate management" className="showcase__screen ferias__screen ferias__screen--properties" label="Properties · rates · costs" />
+            <Desktop src="/work/ferias-guests-current.jpg" alt="Férias BV guest history and revenue view" className="showcase__screen ferias__screen ferias__screen--guests" label="Guests · stays · revenue" />
           </div>
           <div className="ferias__metrics"><span className="ferias__metric"><b>3</b> calendar views</span><span className="ferias__metric"><b>5</b> booking states</span><span className="ferias__metric"><b>1</b> operating picture</span></div>
         </div>
@@ -381,7 +410,7 @@ export function CinematicPortfolio() {
       <section id="downloads" className="scene scene--downloads showcase downloads" data-chapter="7">
         <div className="stage">
           <div className="showcase__glow showcase__glow--downloads" />
-          <ProjectCopy number="07" title="Downloads Organizer" category="Native macOS automation you can trust" description="A menu-bar utility that watches local folders and applies ordered rules to rename and move finished downloads. It starts in dry-run, ignores incomplete files, records every real action, and makes it undoable — with multi-folder support, reusable presets, rule previews, and local-only processing." chips={["SwiftUI", "SwiftData", "FSEvents", "Safety-first automation"]} color="#79B8FF" />
+          <ProjectCopy number="07" title="Downloads Organizer" category="Native macOS automation you can trust" description="A menu-bar utility that watches local folders and applies ordered rules to rename and move finished downloads. It starts in dry-run, ignores incomplete files, records every real action, and makes it undoable — with multi-folder support, reusable presets, rule previews, and local-only processing." color="#79B8FF" />
           <div className="showcase__world downloads__world">
             <Desktop src="/work/downloads-general.jpg" alt="Downloads Organizer general settings" className="showcase__screen downloads__screen downloads__screen--general" label="General · local file processing" />
             <Desktop src="/work/downloads-popover.jpg" alt="Downloads Organizer menu-bar utility" className="showcase__screen showcase__screen--main downloads__screen downloads__screen--popover" label="Downloads Organizer · live" />
