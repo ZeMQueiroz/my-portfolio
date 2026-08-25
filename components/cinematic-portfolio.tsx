@@ -7,6 +7,15 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 
 const chapters = ["Enter", "My5", "NightShelf", "Weekline", "Casa do Cruzeiro", "Petricor", "Férias BV", "Downloads Organizer", "Studio", "Contact"];
+const projectLinks = [
+  { chapter: 1, id: "my5", label: "My5" },
+  { chapter: 2, id: "nightshelf", label: "NightShelf" },
+  { chapter: 3, id: "weekline", label: "Weekline" },
+  { chapter: 4, id: "casa", label: "Casa do Cruzeiro" },
+  { chapter: 5, id: "petricor", label: "Petricor" },
+  { chapter: 6, id: "ferias", label: "Férias BV" },
+  { chapter: 7, id: "downloads", label: "Downloads Organizer" },
+];
 
 function Kicker({ children, tone }: { children: React.ReactNode; tone?: string }) {
   return <div className="kicker" style={tone ? { color: tone } : undefined}>{children}</div>;
@@ -257,13 +266,25 @@ export function CinematicPortfolio() {
     stages.forEach((stage) => observer.observe(stage.parentElement ?? stage));
 
     let pointerRaf = 0;
-    let tx = 0, ty = 0, px = 0, py = 0, hx = 0, hy = 0;
-    const dot = root.querySelector<HTMLElement>(".cursor-dot");
-    const halo = root.querySelector<HTMLElement>(".cursor-halo");
-    const onPointer = (event: PointerEvent) => { tx = event.clientX; ty = event.clientY; dot?.style.setProperty("transform", `translate3d(${tx - 3}px,${ty - 3}px,0)`); };
+    let tx = 0, ty = 0, px = 0, py = 0, hx = 0, hy = 0, lx = 0, ly = 0;
+    const core = root.querySelector<HTMLElement>(".cursor-core");
+    const orbit = root.querySelector<HTMLElement>(".cursor-orbit");
+    const trail = root.querySelector<HTMLElement>(".cursor-trail");
+    const aura = root.querySelector<HTMLElement>(".cursor-aura");
+    const onPointer = (event: PointerEvent) => {
+      tx = event.clientX; ty = event.clientY;
+      root.classList.add("cursor-ready");
+      core?.style.setProperty("transform", `translate3d(${tx - 5}px,${ty - 5}px,0)`);
+    };
     const pointerTick = () => {
-      px += (tx - px) * .055; py += (ty - py) * .055; hx += (tx - hx) * .1; hy += (ty - hy) * .1;
-      halo?.style.setProperty("transform", `translate3d(${hx - 140}px,${hy - 140}px,0)`);
+      const dx = tx - lx, dy = ty - ly;
+      const velocity = Math.min(Math.hypot(dx, dy) / 28, 1);
+      const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+      px += (tx - px) * .065; py += (ty - py) * .065; hx += (tx - hx) * .16; hy += (ty - hy) * .16;
+      orbit?.style.setProperty("transform", `translate3d(${hx - 24}px,${hy - 24}px,0) rotate(${angle + velocity * 28}deg) scale(${1 + velocity * .34})`);
+      trail?.style.setProperty("transform", `translate3d(${px}px,${py}px,0) rotate(${angle + 180}deg) scaleX(${.22 + velocity * 1.45})`);
+      aura?.style.setProperty("transform", `translate3d(${px - 120}px,${py - 120}px,0) scale(${.8 + velocity * .4})`);
+      lx += (tx - lx) * .34; ly += (ty - ly) * .34;
       root.style.setProperty("--mouse-x", `${(px / innerWidth - .5) * 2}`);
       root.style.setProperty("--mouse-y", `${(py / innerHeight - .5) * 2}`);
       root.style.setProperty("--parallax-x", `${(px / innerWidth - .5) * 34}px`);
@@ -276,16 +297,29 @@ export function CinematicPortfolio() {
 
     const magnetic = Array.from(root.querySelectorAll<HTMLElement>("[data-magnetic]"));
     const cleaners = magnetic.map((el) => {
-      const move = (event: PointerEvent) => { const r = el.getBoundingClientRect(); el.style.transform = `translate(${(event.clientX - r.left - r.width / 2) * .22}px, ${(event.clientY - r.top - r.height / 2) * .3}px)`; halo?.classList.add("cursor-halo--large"); };
-      const leave = () => { el.style.transform = "translate(0,0)"; halo?.classList.remove("cursor-halo--large"); };
+      const move = (event: PointerEvent) => { const r = el.getBoundingClientRect(); el.style.transform = `translate(${(event.clientX - r.left - r.width / 2) * .22}px, ${(event.clientY - r.top - r.height / 2) * .3}px)`; orbit?.classList.add("cursor-orbit--active"); aura?.classList.add("cursor-aura--active"); };
+      const leave = () => { el.style.transform = "translate(0,0)"; orbit?.classList.remove("cursor-orbit--active"); aura?.classList.remove("cursor-aura--active"); };
       el.addEventListener("pointermove", move); el.addEventListener("pointerleave", leave);
       return () => { el.removeEventListener("pointermove", move); el.removeEventListener("pointerleave", leave); };
+    });
+
+    const jumpers = Array.from(root.querySelectorAll<HTMLAnchorElement>("[data-project-jump]"));
+    const jumpCleaners = jumpers.map((link) => {
+      const jump = (event: MouseEvent) => {
+        const target = document.querySelector<HTMLElement>(link.hash);
+        if (!target) return;
+        event.preventDefault();
+        if (lenis && !reduced) lenis.scrollTo(target, { duration: 1.35, easing: (t) => 1 - Math.pow(1 - t, 4) });
+        else target.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
+      };
+      link.addEventListener("click", jump);
+      return () => link.removeEventListener("click", jump);
     });
 
     ScrollTrigger.refresh();
     return () => {
       ctx.revert(); observer.disconnect(); lenis?.destroy(); cancelAnimationFrame(raf); cancelAnimationFrame(pointerRaf);
-      window.removeEventListener("pointermove", onPointer); cleaners.forEach((clean) => clean());
+      root.classList.remove("cursor-ready"); window.removeEventListener("pointermove", onPointer); cleaners.forEach((clean) => clean()); jumpCleaners.forEach((clean) => clean());
     };
   }, []);
 
@@ -305,12 +339,18 @@ export function CinematicPortfolio() {
         </a>
         <span>Personal product studio</span>
       </header>
-      <aside className="progress" aria-hidden="true">
-        <div className="progress__track"><i /></div>
-        <b>{String(chapter).padStart(2, "0")}</b>
-        <span>{chapters[chapter]}</span>
-      </aside>
-      <div className="cursor-dot" /><div className="cursor-halo" />
+      <nav className="project-jump" aria-label="Jump to a project">
+        <span className="project-jump__title">Selected work</span>
+        <div className="project-jump__rail"><i /></div>
+        <div className="project-jump__items">
+          {projectLinks.map((project, index) => (
+            <a key={project.id} href={`#${project.id}`} data-project-jump className={chapter === project.chapter ? "project-jump__link--active" : ""} aria-current={chapter === project.chapter ? "location" : undefined}>
+              <span>{String(index + 1).padStart(2, "0")}</span><b>{project.label}</b><i />
+            </a>
+          ))}
+        </div>
+      </nav>
+      <div className="cursor-aura" /><div className="cursor-trail" /><div className="cursor-orbit"><i /><i /><span /></div><div className="cursor-core" />
       <Atmosphere />
 
       <section id="hero" className="scene scene--hero" data-chapter="0">
@@ -322,7 +362,7 @@ export function CinematicPortfolio() {
           </div>
           <div className="dust">{Array.from({ length: 12 }, (_, i) => <i key={i} style={{ left: `${8 + (i * 17) % 86}%`, top: `${8 + (i * 23) % 78}%`, animationDelay: `${-i * 1.7}s` }} />)}</div>
           <div className="hero__copy">
-            <Image className="hero__brand-lockup" src="/qsl-with-label.png" alt="Quit Stack Labs" width={196} height={196} priority />
+            <Image className="hero__brand-lockup" src="/qsl-icon.png" alt="Quit Stack Labs" width={196} height={202} priority />
             <Kicker>Independent product practice</Kicker>
             <h1><span className="hero__word hero__word--1">Quit</span><span className="hero__word hero__word--2">Stack</span><span className="hero__word hero__word--3">Labs</span></h1>
             <p className="hero__sub">Useful software for quieter, more intentional lives.<br /><span>Independent product practice by José Queiroz.</span></p>
