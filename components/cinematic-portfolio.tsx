@@ -103,6 +103,7 @@ export function CinematicPortfolio() {
 
       const hero = sceneTimeline("#hero");
       hero.to(".hero__corridor", { z: 2280 * motion, duration: 1 }, 0)
+        .to(".hero__brand-lockup", { z: 460 * motion, y: -54, scale: 1.14, opacity: 0, filter: "brightness(2.15) saturate(1.1) blur(10px)", duration: .34 }, .04)
         .to(".hero__word--1", { z: 520 * motion, y: -80, opacity: 0, filter: "blur(18px)", duration: .46 }, .44)
         .to(".hero__word--2", { z: 312 * motion, y: -80, opacity: 0, filter: "blur(18px)", duration: .46 }, .49)
         .to(".hero__word--3", { z: 624 * motion, y: -80, opacity: 0, filter: "blur(18px)", duration: .46 }, .54)
@@ -321,6 +322,7 @@ export function CinematicPortfolio() {
           </div>
           <div className="dust">{Array.from({ length: 12 }, (_, i) => <i key={i} style={{ left: `${8 + (i * 17) % 86}%`, top: `${8 + (i * 23) % 78}%`, animationDelay: `${-i * 1.7}s` }} />)}</div>
           <div className="hero__copy">
+            <Image className="hero__brand-lockup" src="/qsl-with-label.png" alt="Quit Stack Labs" width={196} height={196} priority />
             <Kicker>Independent product practice</Kicker>
             <h1><span className="hero__word hero__word--1">Quit</span><span className="hero__word hero__word--2">Stack</span><span className="hero__word hero__word--3">Labs</span></h1>
             <p className="hero__sub">Useful software for quieter, more intentional lives.<br /><span>Independent product practice by José Queiroz.</span></p>
