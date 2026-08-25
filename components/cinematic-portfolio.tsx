@@ -266,24 +266,22 @@ export function CinematicPortfolio() {
     stages.forEach((stage) => observer.observe(stage.parentElement ?? stage));
 
     let pointerRaf = 0;
-    let tx = 0, ty = 0, px = 0, py = 0, hx = 0, hy = 0, lx = 0, ly = 0;
-    const core = root.querySelector<HTMLElement>(".cursor-core");
-    const orbit = root.querySelector<HTMLElement>(".cursor-orbit");
-    const trail = root.querySelector<HTMLElement>(".cursor-trail");
-    const aura = root.querySelector<HTMLElement>(".cursor-aura");
+    let tx = 0, ty = 0, px = 0, py = 0, lx = 0, ly = 0;
+    const cursor = root.querySelector<HTMLElement>(".cursor-system");
+    const lightningLayer = root.querySelector<HTMLElement>(".click-fx-layer");
+    const strikeTimers: number[] = [];
     const onPointer = (event: PointerEvent) => {
       tx = event.clientX; ty = event.clientY;
       root.classList.add("cursor-ready");
-      core?.style.setProperty("transform", `translate3d(${tx - 5}px,${ty - 5}px,0)`);
+      cursor?.style.setProperty("transform", `translate3d(${tx}px,${ty}px,0)`);
     };
     const pointerTick = () => {
       const dx = tx - lx, dy = ty - ly;
       const velocity = Math.min(Math.hypot(dx, dy) / 28, 1);
       const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-      px += (tx - px) * .065; py += (ty - py) * .065; hx += (tx - hx) * .16; hy += (ty - hy) * .16;
-      orbit?.style.setProperty("transform", `translate3d(${hx - 24}px,${hy - 24}px,0) rotate(${angle + velocity * 28}deg) scale(${1 + velocity * .34})`);
-      trail?.style.setProperty("transform", `translate3d(${px}px,${py}px,0) rotate(${angle + 180}deg) scaleX(${.22 + velocity * 1.45})`);
-      aura?.style.setProperty("transform", `translate3d(${px - 120}px,${py - 120}px,0) scale(${.8 + velocity * .4})`);
+      px += (tx - px) * .065; py += (ty - py) * .065;
+      cursor?.style.setProperty("--cursor-angle", `${angle}deg`);
+      cursor?.style.setProperty("--cursor-speed", velocity.toFixed(3));
       lx += (tx - lx) * .34; ly += (ty - ly) * .34;
       root.style.setProperty("--mouse-x", `${(px / innerWidth - .5) * 2}`);
       root.style.setProperty("--mouse-y", `${(py / innerHeight - .5) * 2}`);
@@ -295,10 +293,28 @@ export function CinematicPortfolio() {
     };
     if (!coarse && !reduced) { window.addEventListener("pointermove", onPointer); pointerRaf = requestAnimationFrame(pointerTick); }
 
+    const onStrike = (event: PointerEvent) => {
+      if (reduced || event.button !== 0 || !event.isPrimary || !lightningLayer) return;
+      const strike = document.createElement("span");
+      strike.className = "click-lightning";
+      strike.style.left = `${event.clientX}px`;
+      strike.style.top = `${event.clientY}px`;
+      strike.style.setProperty("--strike-top", `${-event.clientY}px`);
+      const bolt = document.createElement("i"); bolt.className = "click-lightning__bolt";
+      const echo = document.createElement("i"); echo.className = "click-lightning__echo";
+      const impact = document.createElement("i"); impact.className = "click-lightning__impact";
+      const sigil = document.createElement("span"); sigil.className = "click-lightning__sigil";
+      sigil.append(document.createElement("i"), document.createElement("i"));
+      strike.append(bolt, echo, impact, sigil);
+      lightningLayer.appendChild(strike);
+      strikeTimers.push(window.setTimeout(() => strike.remove(), 950));
+    };
+    if (!reduced) window.addEventListener("pointerdown", onStrike);
+
     const magnetic = Array.from(root.querySelectorAll<HTMLElement>("[data-magnetic]"));
     const cleaners = magnetic.map((el) => {
-      const move = (event: PointerEvent) => { const r = el.getBoundingClientRect(); el.style.transform = `translate(${(event.clientX - r.left - r.width / 2) * .22}px, ${(event.clientY - r.top - r.height / 2) * .3}px)`; orbit?.classList.add("cursor-orbit--active"); aura?.classList.add("cursor-aura--active"); };
-      const leave = () => { el.style.transform = "translate(0,0)"; orbit?.classList.remove("cursor-orbit--active"); aura?.classList.remove("cursor-aura--active"); };
+      const move = (event: PointerEvent) => { const r = el.getBoundingClientRect(); el.style.transform = `translate(${(event.clientX - r.left - r.width / 2) * .22}px, ${(event.clientY - r.top - r.height / 2) * .3}px)`; cursor?.classList.add("cursor-system--active"); };
+      const leave = () => { el.style.transform = "translate(0,0)"; cursor?.classList.remove("cursor-system--active"); };
       el.addEventListener("pointermove", move); el.addEventListener("pointerleave", leave);
       return () => { el.removeEventListener("pointermove", move); el.removeEventListener("pointerleave", leave); };
     });
@@ -319,7 +335,7 @@ export function CinematicPortfolio() {
     ScrollTrigger.refresh();
     return () => {
       ctx.revert(); observer.disconnect(); lenis?.destroy(); cancelAnimationFrame(raf); cancelAnimationFrame(pointerRaf);
-      root.classList.remove("cursor-ready"); window.removeEventListener("pointermove", onPointer); cleaners.forEach((clean) => clean()); jumpCleaners.forEach((clean) => clean());
+      root.classList.remove("cursor-ready"); window.removeEventListener("pointermove", onPointer); window.removeEventListener("pointerdown", onStrike); strikeTimers.forEach((timer) => window.clearTimeout(timer)); cleaners.forEach((clean) => clean()); jumpCleaners.forEach((clean) => clean());
     };
   }, []);
 
@@ -350,7 +366,12 @@ export function CinematicPortfolio() {
           ))}
         </div>
       </nav>
-      <div className="cursor-aura" /><div className="cursor-trail" /><div className="cursor-orbit"><i /><i /><span /></div><div className="cursor-core" />
+      <div className="click-fx-layer" aria-hidden="true" />
+      <div className="cursor-system" aria-hidden="true">
+        <div className="cursor-aura" /><div className="cursor-trail" />
+        <div className="cursor-orbit"><i className="cursor-node cursor-node--a" /><i className="cursor-node cursor-node--b" /><span className="cursor-glyph"><i /><i /></span></div>
+        <div className="cursor-core" />
+      </div>
       <Atmosphere />
 
       <section id="hero" className="scene scene--hero" data-chapter="0">
