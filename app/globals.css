@@ -70,13 +70,10 @@ img { display:block; max-width:100%; }
 
 .click-fx-layer{position:fixed;z-index:88;inset:0;overflow:hidden;pointer-events:none}
 .click-lightning{position:fixed;width:0;height:0;pointer-events:none}
-.click-lightning__bolt{position:absolute;left:-18px;top:var(--strike-top);width:36px;height:100vh;background:linear-gradient(180deg,transparent 0%,#9bc4ff 12%,#fff 46%,#8eeaff 68%,#7a4dff 88%,transparent 100%);clip-path:polygon(48% 0,59% 12%,43% 22%,58% 34%,45% 48%,60% 61%,42% 76%,54% 88%,48% 100%,43% 88%,51% 76%,38% 61%,52% 48%,40% 34%,51% 22%,43% 12%);filter:drop-shadow(0 0 7px #8eeaff) drop-shadow(0 0 18px rgba(122,77,255,.75));transform-origin:top;animation:qsl-strike .7s cubic-bezier(.2,.8,.2,1) forwards}
-.click-lightning__echo{position:absolute;left:-70px;top:-50vh;width:140px;height:100vh;background:linear-gradient(90deg,transparent,rgba(110,210,255,.14),transparent);filter:blur(16px);animation:qsl-echo .75s ease-out forwards}
+.click-lightning__canvas{position:fixed;z-index:1;inset:0;mix-blend-mode:screen;pointer-events:none}
 .click-lightning__impact{position:absolute;left:0;top:0;width:18px;height:18px;border:1px solid #dce8ff;border-radius:50%;box-shadow:0 0 18px #8eeaff,0 0 42px rgba(122,77,255,.75);animation:qsl-impact .8s cubic-bezier(.15,.75,.2,1) forwards}
 .click-lightning__sigil{position:absolute;left:0;top:0;width:32px;height:36px;transform:translate(-50%,-50%);filter:drop-shadow(0 0 8px #8eeaff);animation:qsl-sigil .85s cubic-bezier(.2,.8,.2,1) forwards}
 .click-lightning__sigil i{position:absolute;left:5px;width:22px;height:22px;border-right:2px solid #8eeaff;border-bottom:2px solid #8eeaff;transform:rotate(45deg)}.click-lightning__sigil i:first-child{top:-4px}.click-lightning__sigil i:last-child{top:6px;opacity:.62}
-@keyframes qsl-strike{0%{opacity:0;transform:scaleY(0)}12%{opacity:1;transform:scaleY(1)}28%{opacity:.35}42%{opacity:1}100%{opacity:0;transform:scaleY(1)}}
-@keyframes qsl-echo{0%{opacity:0;scale:.3 1}18%{opacity:1}100%{opacity:0;scale:1.7 1}}
 @keyframes qsl-impact{0%{opacity:1;transform:translate(-50%,-50%) scale(.2)}100%{opacity:0;transform:translate(-50%,-50%) scale(7)}}
 @keyframes qsl-sigil{0%{opacity:0;transform:translate(-50%,-50%) scale(.35) rotate(-16deg)}22%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.45) translateY(22px)}}
 

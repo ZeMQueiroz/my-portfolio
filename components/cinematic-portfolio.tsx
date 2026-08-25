@@ -270,6 +270,7 @@ export function CinematicPortfolio() {
     const cursor = root.querySelector<HTMLElement>(".cursor-system");
     const lightningLayer = root.querySelector<HTMLElement>(".click-fx-layer");
     const strikeTimers: number[] = [];
+    const strikeFrames = new Set<number>();
     const onPointer = (event: PointerEvent) => {
       tx = event.clientX; ty = event.clientY;
       root.classList.add("cursor-ready");
@@ -299,15 +300,73 @@ export function CinematicPortfolio() {
       strike.className = "click-lightning";
       strike.style.left = `${event.clientX}px`;
       strike.style.top = `${event.clientY}px`;
-      strike.style.setProperty("--strike-top", `${-event.clientY}px`);
-      const bolt = document.createElement("i"); bolt.className = "click-lightning__bolt";
-      const echo = document.createElement("i"); echo.className = "click-lightning__echo";
+      const canvas = document.createElement("canvas"); canvas.className = "click-lightning__canvas";
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(innerWidth * dpr); canvas.height = Math.round(innerHeight * dpr);
+      canvas.style.width = `${innerWidth}px`; canvas.style.height = `${innerHeight}px`;
+      const context = canvas.getContext("2d");
       const impact = document.createElement("i"); impact.className = "click-lightning__impact";
       const sigil = document.createElement("span"); sigil.className = "click-lightning__sigil";
       sigil.append(document.createElement("i"), document.createElement("i"));
-      strike.append(bolt, echo, impact, sigil);
+      strike.append(canvas, impact, sigil);
       lightningLayer.appendChild(strike);
-      strikeTimers.push(window.setTimeout(() => strike.remove(), 950));
+
+      if (context) {
+        type BoltPoint = { x: number; y: number };
+        const clickPoint = { x: event.clientX, y: event.clientY };
+        const slant = (Math.random() > .5 ? 1 : -1) * (80 + Math.random() * 55);
+        const ratio = clickPoint.y / innerHeight;
+        const topPoint = { x: clickPoint.x - slant * ratio, y: -24 };
+        const bottomPoint = { x: clickPoint.x + slant * (1 - ratio), y: innerHeight + 24 };
+        const segment = (from: BoltPoint, to: BoltPoint, count: number) => Array.from({ length: count + 1 }, (_, index) => {
+          const t = index / count;
+          const envelope = Math.sin(Math.PI * t);
+          const jag = (Math.random() - .5) * (24 + Math.random() * 24) * envelope;
+          return { x: from.x + (to.x - from.x) * t + jag, y: from.y + (to.y - from.y) * t };
+        });
+        const upper = segment(topPoint, clickPoint, Math.max(5, Math.ceil((clickPoint.y + 24) / 22)));
+        const lower = segment(clickPoint, bottomPoint, Math.max(5, Math.ceil((innerHeight - clickPoint.y + 24) / 22)));
+        const mainBolt = [...upper.slice(0, -1), ...lower];
+        const branches: BoltPoint[][] = [];
+        for (let index = 4; index < mainBolt.length - 4; index += 5 + Math.floor(Math.random() * 5)) {
+          if (Math.random() < .42) continue;
+          const origin = mainBolt[index];
+          const direction = Math.random() > .5 ? 1 : -1;
+          const length = 3 + Math.floor(Math.random() * 4);
+          const branch = [origin];
+          for (let step = 1; step <= length; step++) branch.push({
+            x: origin.x + direction * step * (11 + Math.random() * 10) + (Math.random() - .5) * 15,
+            y: origin.y + step * (12 + Math.random() * 11),
+          });
+          branches.push(branch);
+        }
+
+        const started = performance.now();
+        let frame = 0;
+        const stroke = (points: BoltPoint[], width: number, color: string, blur: number, alpha: number) => {
+          context.beginPath(); context.moveTo(points[0].x, points[0].y);
+          points.slice(1).forEach((point) => context.lineTo(point.x, point.y));
+          context.lineWidth = width; context.strokeStyle = color; context.shadowColor = color; context.shadowBlur = blur; context.globalAlpha = alpha; context.stroke();
+        };
+        const renderStrike = (now: number) => {
+          strikeFrames.delete(frame);
+          const elapsed = now - started;
+          const fade = Math.max(0, 1 - elapsed / 620);
+          const flicker = elapsed < 85 ? 1 : elapsed < 145 ? .18 : elapsed < 255 ? .82 : elapsed < 330 ? .28 : .58;
+          context.setTransform(dpr, 0, 0, dpr, 0, 0); context.clearRect(0, 0, innerWidth, innerHeight);
+          context.save(); context.globalCompositeOperation = "lighter"; context.lineCap = "round"; context.lineJoin = "round";
+          context.translate((Math.random() - .5) * 1.6, (Math.random() - .5) * .8);
+          branches.forEach((branch) => { stroke(branch, 3.8, "#6e8cff", 16, fade * flicker * .18); stroke(branch, .75, "#bfeeff", 7, fade * flicker * .72); });
+          stroke(mainBolt, 11, "#527eff", 28, fade * flicker * .16);
+          stroke(mainBolt, 4.2, "#75dfff", 18, fade * flicker * .5);
+          stroke(mainBolt, 1.45, "#f6fdff", 8, fade * flicker);
+          stroke(mainBolt, .55, "#ffffff", 2, fade);
+          context.restore();
+          if (elapsed < 620) { frame = requestAnimationFrame(renderStrike); strikeFrames.add(frame); }
+        };
+        frame = requestAnimationFrame(renderStrike); strikeFrames.add(frame);
+        strikeTimers.push(window.setTimeout(() => { cancelAnimationFrame(frame); strikeFrames.delete(frame); strike.remove(); }, 900));
+      } else strikeTimers.push(window.setTimeout(() => strike.remove(), 900));
     };
     if (!reduced) window.addEventListener("pointerdown", onStrike);
 
@@ -335,7 +394,7 @@ export function CinematicPortfolio() {
     ScrollTrigger.refresh();
     return () => {
       ctx.revert(); observer.disconnect(); lenis?.destroy(); cancelAnimationFrame(raf); cancelAnimationFrame(pointerRaf);
-      root.classList.remove("cursor-ready"); window.removeEventListener("pointermove", onPointer); window.removeEventListener("pointerdown", onStrike); strikeTimers.forEach((timer) => window.clearTimeout(timer)); cleaners.forEach((clean) => clean()); jumpCleaners.forEach((clean) => clean());
+      root.classList.remove("cursor-ready"); window.removeEventListener("pointermove", onPointer); window.removeEventListener("pointerdown", onStrike); strikeTimers.forEach((timer) => window.clearTimeout(timer)); strikeFrames.forEach((frame) => cancelAnimationFrame(frame)); cleaners.forEach((clean) => clean()); jumpCleaners.forEach((clean) => clean());
     };
   }, []);
 
