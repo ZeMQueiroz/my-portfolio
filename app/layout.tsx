@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [{ url: "/og.png", width: 1200, height: 630 }],
   },
-  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
+  icons: { icon: "/qsl-icon.png", shortcut: "/qsl-icon.png", apple: "/qsl-icon.png" },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

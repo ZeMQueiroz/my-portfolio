@@ -298,7 +298,10 @@ export function CinematicPortfolio() {
       </div>
 
       <header className="chrome-header">
-        <a href="#top" aria-label="Quit Stack Labs" data-magnetic><span className="diamond" />Quit Stack Labs</a>
+        <a href="#top" aria-label="Quit Stack Labs — back to the beginning" data-magnetic>
+          <Image className="chrome-header__logo" src="/qsl-icon.png" alt="" width={38} height={39} priority />
+          <span>Quit Stack Labs</span>
+        </a>
         <span>Personal product studio</span>
       </header>
       <aside className="progress" aria-hidden="true">
@@ -453,7 +456,11 @@ export function CinematicPortfolio() {
           <div className="contact__content"><Kicker>Contact</Kicker><div className="contact__reveal"><div><h2>Have a problem worth</h2></div><div><h2>getting close to?</h2></div></div><p className="contact__copy">I’m interested in thoughtful products, unusual systems, and ideas that deserve a clearer shape.</p>
             <div className="contact__links"><a href="mailto:zemqueiroz@gmail.com" data-magnetic><span>01</span>Email<i>↗</i></a><a href="https://github.com/ZeMQueiroz" target="_blank" rel="noreferrer" data-magnetic><span>02</span>GitHub<i>↗</i></a><a href="https://www.linkedin.com/in/josequeiroz/" target="_blank" rel="noreferrer" data-magnetic><span>03</span>LinkedIn<i>↗</i></a></div>
           </div>
-          <div className="contact__dark" /><div className="contact__mark"><span className="diamond" /><b>Quit Stack Labs</b><small>Personal work by José Queiroz</small></div>
+          <div className="contact__dark" />
+          <div className="contact__mark">
+            <Image className="contact__lockup" src="/qsl-with-label.png" alt="Quit Stack Labs" width={460} height={460} />
+            <small>Personal work by José Queiroz</small>
+          </div>
         </div>
       </section>
     </main>
