@@ -401,7 +401,13 @@ export function CinematicPortfolio() {
   return (
     <main ref={rootRef} className="portfolio" id="top">
       <div className={`loader ${loaded ? "loader--done" : ""}`} aria-hidden="true">
-        <div className="loader__ring"><span /></div>
+        <div className="loader__ring"><i /><i /></div>
+        <div className="loader__brand">
+          <Image className="loader__brand-piece loader__brand-piece--top" src="/qsl-icon.png" alt="" width={86} height={89} priority />
+          <Image className="loader__brand-piece loader__brand-piece--middle" src="/qsl-icon.png" alt="" width={86} height={89} priority />
+          <Image className="loader__brand-piece loader__brand-piece--bottom" src="/qsl-icon.png" alt="" width={86} height={89} priority />
+          <span className="loader__brand-scan" />
+        </div>
         <div className="loader__line" />
         <div className="loader__word">{"QUIT STACK LABS".split("").map((letter, index) => <span key={`${letter}-${index}`} style={{ animationDelay: `${.65 + index * .05}s` }}>{letter === " " ? "\u00a0" : letter}</span>)}</div>
         <div className="loader__sweep" />
