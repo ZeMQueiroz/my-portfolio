@@ -409,14 +409,14 @@ export function CinematicPortfolio() {
           <span className="loader__brand-scan" />
         </div>
         <div className="loader__line" />
-        <div className="loader__word">{"QUIT STACK LABS".split("").map((letter, index) => <span key={`${letter}-${index}`} style={{ animationDelay: `${.65 + index * .05}s` }}>{letter === " " ? "\u00a0" : letter}</span>)}</div>
+        <div className="loader__word">{"QUIET STACK LABS".split("").map((letter, index) => <span key={`${letter}-${index}`} style={{ animationDelay: `${.65 + index * .05}s` }}>{letter === " " ? "\u00a0" : letter}</span>)}</div>
         <div className="loader__sweep" />
       </div>
 
       <header className="chrome-header">
-        <a href="#top" aria-label="Quit Stack Labs — back to the beginning" data-magnetic>
+        <a href="#top" aria-label="Quiet Stack Labs — back to the beginning" data-magnetic>
           <Image className="chrome-header__logo" src="/qsl-icon.png" alt="" width={38} height={39} priority />
-          <span>Quit Stack Labs</span>
+          <span>Quiet Stack Labs</span>
         </a>
         <span>Personal product studio</span>
       </header>
@@ -448,9 +448,9 @@ export function CinematicPortfolio() {
           </div>
           <div className="dust">{Array.from({ length: 12 }, (_, i) => <i key={i} style={{ left: `${8 + (i * 17) % 86}%`, top: `${8 + (i * 23) % 78}%`, animationDelay: `${-i * 1.7}s` }} />)}</div>
           <div className="hero__copy">
-            <Image className="hero__brand-lockup" src="/qsl-icon.png" alt="Quit Stack Labs" width={196} height={202} priority />
+            <Image className="hero__brand-lockup" src="/qsl-icon.png" alt="Quiet Stack Labs" width={196} height={202} priority />
             <Kicker>Independent product practice</Kicker>
-            <h1><span className="hero__word hero__word--1">Quit</span><span className="hero__word hero__word--2">Stack</span><span className="hero__word hero__word--3">Labs</span></h1>
+            <h1><span className="hero__word hero__word--1">Quiet</span><span className="hero__word hero__word--2">Stack</span><span className="hero__word hero__word--3">Labs</span></h1>
             <p className="hero__sub">Useful software for quieter, more intentional lives.<br /><span>Independent product practice by José Queiroz.</span></p>
           </div>
           <div className="hero__cue">Scroll to enter<i /></div>
@@ -573,7 +573,7 @@ export function CinematicPortfolio() {
       <section id="studio" className="scene scene--studio studio" data-chapter="8">
         <div className="stage"><div className="studio__light" />
           <div className="studio__content"><Kicker><span className="studio__kicker">The studio</span></Kicker>
-            <div className="studio__reveal"><div><h2>A studio name for one person</h2></div><div><h2>who likes making the whole thing.</h2></div><div className="studio__paragraph"><p>Quit Stack Labs is José Queiroz’s independent product practice — a place for turning stubborn problems into thoughtful, useful software.</p></div><div className="studio__paragraph"><p>I work across strategy, systems, interface, interaction, and engineering. The interesting part is rarely one layer. It is how all of them meet.</p></div></div>
+            <div className="studio__reveal"><div><h2>A studio name for one person</h2></div><div><h2>who likes making the whole thing.</h2></div><div className="studio__paragraph"><p>Quiet Stack Labs is José Queiroz’s independent product practice — a place for turning stubborn problems into thoughtful, useful software.</p></div><div className="studio__paragraph"><p>I work across strategy, systems, interface, interaction, and engineering. The interesting part is rarely one layer. It is how all of them meet.</p></div></div>
             <div className="studio__disciplines">{["Product strategy","Interface design","Interaction","Mobile","Web","Systems","Engineering","Automation"].map(x=><span key={x}>{x}</span>)}</div>
           </div>
         </div>
@@ -586,7 +586,10 @@ export function CinematicPortfolio() {
           </div>
           <div className="contact__dark" />
           <div className="contact__mark">
-            <Image className="contact__lockup" src="/qsl-with-label.png" alt="Quit Stack Labs" width={460} height={460} />
+            <div className="contact__brand">
+              <Image className="contact__brand-icon" src="/qsl-icon.png" alt="" width={220} height={228} />
+              <b>Quiet Stack</b><em>Labs</em>
+            </div>
             <small>Personal work by José Queiroz</small>
           </div>
         </div>

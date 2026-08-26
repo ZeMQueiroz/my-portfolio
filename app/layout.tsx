@@ -17,12 +17,12 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://quitstacklabs.com"),
-  title: "Quit Stack Labs — José Queiroz",
+  metadataBase: new URL("https://quit-stack-labs-cinematic.jmcbtq.chatgpt.site"),
+  title: "Quiet Stack Labs — José Queiroz",
   description:
     "Useful software for quieter, more intentional lives. Independent product practice by José Queiroz.",
   openGraph: {
-    title: "Quit Stack Labs",
+    title: "Quiet Stack Labs",
     description: "Independent product practice by José Queiroz.",
     type: "website",
     images: [{ url: "/og.png", width: 1200, height: 630 }],
