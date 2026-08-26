@@ -296,6 +296,8 @@ export function CinematicPortfolio() {
 
     const onStrike = (event: PointerEvent) => {
       if (reduced || event.button !== 0 || !event.isPrimary || !lightningLayer) return;
+      const target = event.target instanceof Element ? event.target : null;
+      if (target?.closest("a,button,input,textarea,select,option,label,[role='button'],[role='link'],[contenteditable='true']")) return;
       const strike = document.createElement("span");
       strike.className = "click-lightning";
       strike.style.left = `${event.clientX}px`;
