@@ -590,7 +590,7 @@ export function CinematicPortfolio() {
       <section id="contact" className="scene scene--contact contact" data-chapter="9">
         <div className="stage"><div className="contact__points">{Array.from({length:7},(_,i)=><i key={i} style={{left:`${12+(i*19)%78}%`,top:`${14+(i*29)%70}%`}} />)}</div>
           <div className="contact__content"><Kicker>Contact</Kicker><div className="contact__reveal"><div><h2>Have a problem worth</h2></div><div><h2>getting close to?</h2></div></div><p className="contact__copy">I’m interested in thoughtful products, unusual systems, and ideas that deserve a clearer shape.</p>
-            <div className="contact__links"><a href="mailto:zemqueiroz@gmail.com" data-magnetic><span>01</span>Email<i>↗</i></a><a href="https://github.com/ZeMQueiroz" target="_blank" rel="noreferrer" data-magnetic><span>02</span>GitHub<i>↗</i></a><a href="https://www.linkedin.com/in/josequeiroz/" target="_blank" rel="noreferrer" data-magnetic><span>03</span>LinkedIn<i>↗</i></a></div>
+            <div className="contact__links"><a href="mailto:zemqueiroz@gmail.com" data-magnetic><span>01</span>Email<i>↗</i></a><a href="https://github.com/ZeMQueiroz" target="_blank" rel="noreferrer" data-magnetic><span>02</span>GitHub<i>↗</i></a><a href="https://www.linkedin.com/in/josemqueiroz/" target="_blank" rel="noreferrer" data-magnetic><span>03</span>LinkedIn<i>↗</i></a></div>
           </div>
           <div className="contact__dark" />
           <div className="contact__mark">
