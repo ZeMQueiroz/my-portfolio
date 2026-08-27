@@ -95,19 +95,20 @@ export function CinematicPortfolio() {
     const coarse = window.matchMedia("(pointer: coarse)").matches;
     const motion = reduced ? 0.3 : 1.4;
     let lenis: Lenis | null = null;
-    let raf = 0;
+    let lenisTick: ((time: number) => void) | null = null;
 
     if (!reduced && !coarse) {
-      lenis = new Lenis({ duration: .82, wheelMultiplier: 1.02, smoothWheel: true, syncTouch: true, touchMultiplier: 1.05, overscroll: false });
-      const tick = (time: number) => { lenis?.raf(time); raf = requestAnimationFrame(tick); };
-      raf = requestAnimationFrame(tick);
+      lenis = new Lenis({ lerp: .14, wheelMultiplier: 1, smoothWheel: true, syncTouch: true, touchMultiplier: 1.05, overscroll: false });
+      lenisTick = (time: number) => lenis?.raf(time * 1000);
+      gsap.ticker.add(lenisTick);
+      gsap.ticker.lagSmoothing(0);
       lenis.on("scroll", ScrollTrigger.update);
     }
 
     const ctx = gsap.context(() => {
       const sceneTimeline = (selector: string) => gsap.timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: { trigger: selector, start: "top top", end: "bottom bottom", scrub: reduced ? 0.1 : 0.35, fastScrollEnd: true, invalidateOnRefresh: true },
+        defaults: { ease: "none", force3D: true },
+        scrollTrigger: { trigger: selector, start: "top top", end: "bottom bottom", scrub: !reduced, invalidateOnRefresh: true },
       });
 
       const hero = sceneTimeline("#hero");
@@ -121,113 +122,113 @@ export function CinematicPortfolio() {
         .to(".hero__cue", { opacity: 0, y: 60, duration: .16 }, .02)
         .to(".hero__floor", { opacity: 0, duration: .32 }, .3);
 
-      gsap.set(".my5__hero", { z: -1450, rotateY: 46, rotateX: 4, opacity: 0, filter: "blur(14px)" });
-      gsap.set(".my5__side--a", { x: -120, z: -1450, rotateY: 34, opacity: 0, filter: "blur(11px)" });
-      gsap.set(".my5__side--b", { x: 120, z: -1500, rotateY: -34, opacity: 0, filter: "blur(11px)" });
+      gsap.set(".my5__hero", { z: -1450, rotateY: 46, rotateX: 4, opacity: 0 });
+      gsap.set(".my5__side--a", { x: -120, z: -1450, rotateY: 34, opacity: 0 });
+      gsap.set(".my5__side--b", { x: 120, z: -1500, rotateY: -34, opacity: 0 });
       const my5 = sceneTimeline("#my5");
-      my5.to(".my5__hero", { z: -120, rotateY: 0, rotateX: 0, opacity: 1, filter: "blur(0px)", duration: .24, ease: "power2.out" }, .04)
+      my5.to(".my5__hero", { z: -120, rotateY: 0, rotateX: 0, opacity: 1, duration: .24, ease: "power2.out" }, .04)
         .to(".my5__hero", { z: 330 * motion, duration: .2 }, .3)
         .to(".my5__hero", { z: -430, rotateY: -12, duration: .22 }, .5)
-        .to(".my5__hero", { z: -950, opacity: 0, filter: "blur(10px)", duration: .18 }, .82)
-        .to(".my5__side--a", { x: -450 * motion, z: -680, rotateY: 22, opacity: .9, filter: "blur(0px)", duration: .24 }, .38)
-        .to(".my5__side--b", { x: 490 * motion, z: -870, rotateY: -22, opacity: .78, filter: "blur(0px)", duration: .24 }, .38)
+        .to(".my5__hero", { z: -950, opacity: 0, duration: .18 }, .82)
+        .to(".my5__side--a", { x: -450 * motion, z: -680, rotateY: 22, opacity: .9, duration: .24 }, .38)
+        .to(".my5__side--b", { x: 490 * motion, z: -870, rotateY: -22, opacity: .78, duration: .24 }, .38)
         .fromTo(".my5__depth", { opacity: 0, x: -60 }, { opacity: 1, x: 0, stagger: .05, duration: .16 }, .44)
         .to(".my5__depth", { opacity: 0, y: -100, stagger: .04, duration: .16 }, .76)
         .to(".my5 .project-copy", { opacity: 0, y: -80, duration: .14 }, .74)
         .to(".my5__line", { scaleX: 1, opacity: 1, duration: .14 }, .86);
 
-      gsap.set(".ns__phone", { z: -950, rotateY: 26, opacity: 0, filter: "blur(12px)" });
+      gsap.set(".ns__phone", { z: -950, rotateY: 26, opacity: 0 });
       gsap.set(".ns__panel", { z: -1500, opacity: 0 });
       gsap.set(".ns__card", { opacity: 0, z: -220 });
       const ns = sceneTimeline("#nightshelf");
       ns.to(".ns__incoming", { scaleY: 240, opacity: 0, duration: .13 }, .03)
         .to(".ns__panel", { z: -650, opacity: .72, stagger: .035, duration: .28 }, .06)
-        .to(".ns__phone", { z: 180 * motion, rotateY: 0, opacity: 1, filter: "blur(0px)", duration: .32 }, .18)
+        .to(".ns__phone", { z: 180 * motion, rotateY: 0, opacity: 1, duration: .32 }, .18)
         .to(".ns__card--1", { opacity: 1, x: -340 * motion, y: -220 * motion, z: 120, rotateY: -16, rotateZ: -5, duration: .24 }, .42)
         .to(".ns__card--2", { opacity: 1, x: 390 * motion, y: -25, z: 60, rotateY: 16, rotateZ: 5, duration: .24 }, .42)
         .to(".ns__card--3", { opacity: 1, x: -135, y: 250 * motion, z: -20, rotateY: -8, duration: .24 }, .42)
         .fromTo(".ns__category", { opacity: 0, y: 60 }, { opacity: 1, y: 0, stagger: .045, duration: .17 }, .5)
         .to(".ns__panel, .ns__card", { z: 1500 * motion, opacity: 0, stagger: .02, duration: .3 }, .6)
-        .to(".ns__phone", { z: -700, opacity: 0, filter: "blur(12px)", duration: .2 }, .72)
+        .to(".ns__phone", { z: -700, opacity: 0, duration: .2 }, .72)
         .fromTo(".ns__identity", { opacity: 0, scale: .94 }, { opacity: 1, scale: 1, duration: .1 }, .8)
         .to(".ns__identity", { opacity: 0, duration: .08 }, .92)
         .to(".ns__line", { scaleX: 1, opacity: 1, duration: .08 }, .92);
 
-      gsap.set(".weekline__screen", { z: -1300, opacity: 0, filter: "blur(12px)" });
+      gsap.set(".weekline__screen", { z: -1300, opacity: 0 });
       const week = sceneTimeline("#weekline");
       week.to(".weekline__rail", { scaleX: 1, duration: .25 }, .05)
         .fromTo(".weekline__tick", { opacity: 0, y: 30 }, { opacity: 1, y: 0, stagger: .035, duration: .16 }, .1)
         .fromTo(".weekline__block", { scaleX: 0 }, { scaleX: 1, stagger: .028, duration: .12 }, .2)
-        .to(".weekline__screen--focus", { z: 80, rotateY: 0, opacity: 1, filter: "blur(0px)", duration: .28, ease: "power2.out" }, .14)
-        .to(".weekline__screen--report", { x: -410 * motion, y: -65, z: -360, rotateY: 18, opacity: .82, filter: "blur(0px)", duration: .27 }, .24)
-        .to(".weekline__screen--export", { x: 415 * motion, y: 45, z: -430, rotateY: -18, opacity: .76, filter: "blur(1px)", duration: .27 }, .28)
-        .to(".weekline__screen--projects", { x: -690 * motion, y: 115, z: -760, rotateY: 24, opacity: .52, filter: "blur(2px)", duration: .25 }, .34)
-        .to(".weekline__screen--motion", { x: 690 * motion, y: -120, z: -820, rotateY: -24, opacity: .46, filter: "blur(3px)", duration: .25 }, .37)
-        .to(".weekline__screen--themes", { x: 120, y: -310, z: -720, rotateX: -9, opacity: .44, filter: "blur(2px)", duration: .25 }, .4)
+        .to(".weekline__screen--focus", { z: 80, rotateY: 0, opacity: 1, duration: .28, ease: "power2.out" }, .14)
+        .to(".weekline__screen--report", { x: -410 * motion, y: -65, z: -360, rotateY: 18, opacity: .82, duration: .27 }, .24)
+        .to(".weekline__screen--export", { x: 415 * motion, y: 45, z: -430, rotateY: -18, opacity: .76, duration: .27 }, .28)
+        .to(".weekline__screen--projects", { x: -690 * motion, y: 115, z: -760, rotateY: 24, opacity: .52, duration: .25 }, .34)
+        .to(".weekline__screen--motion", { x: 690 * motion, y: -120, z: -820, rotateY: -24, opacity: .46, duration: .25 }, .37)
+        .to(".weekline__screen--themes", { x: 120, y: -310, z: -720, rotateX: -9, opacity: .44, duration: .25 }, .4)
         .to(".weekline__gallery", { x: `${-10 * motion}vw`, rotateY: -4, duration: .3 }, .5)
         .to(".weekline__screen--focus", { z: 380 * motion, scale: 1.05, duration: .18 }, .58)
-        .to(".weekline__screen", { y: -240, z: 1250 * motion, opacity: 0, filter: "blur(10px)", stagger: { amount: .04 }, duration: .18 }, .78)
+        .to(".weekline__screen", { y: -240, z: 1250 * motion, opacity: 0, stagger: { amount: .04 }, duration: .18 }, .78)
         .fromTo(".weekline__close", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: .08 }, .88)
         .to(".weekline__close", { opacity: 0, duration: .04 }, .96);
 
-      gsap.set(".casa__screen", { z: -1200, opacity: 0, filter: "blur(14px)" });
-      gsap.set(".casa__photo", { z: -900, opacity: 0, filter: "blur(8px)" });
+      gsap.set(".casa__screen", { z: -1200, opacity: 0 });
+      gsap.set(".casa__photo", { z: -900, opacity: 0 });
       const casa = sceneTimeline("#casa");
       casa.to(".casa .motion-field", { rotate: 105, scale: 1.22, opacity: .72, duration: 1 }, 0)
         .fromTo(".casa .motion-field i", { y: 90, opacity: 0 }, { y: -80, opacity: .7, stagger: .035, duration: .55 }, .1)
-        .to(".casa__screen--main", { z: -50, rotateY: -4, opacity: 1, filter: "blur(0px)", duration: .22, ease: "power2.out" }, 0)
-        .to(".casa__screen--history", { x: -470 * motion, z: -480, rotateY: 18, opacity: .78, filter: "blur(1px)", duration: .26 }, .22)
-        .to(".casa__screen--projects", { x: 490 * motion, z: -620, rotateY: -18, opacity: .68, filter: "blur(2px)", duration: .26 }, .28)
-        .to(".casa__photo--property", { x: -570 * motion, y: 210, z: -320, rotateZ: -7, opacity: .86, filter: "blur(0px)", duration: .22 }, .34)
-        .to(".casa__photo--pool", { x: 590 * motion, y: -215, z: -500, rotateZ: 8, opacity: .76, filter: "blur(0px)", duration: .22 }, .38)
-        .to(".casa__photo--heritage", { x: 430 * motion, y: 245, z: -700, rotateZ: -5, opacity: .62, filter: "blur(1px)", duration: .22 }, .41)
+        .to(".casa__screen--main", { z: -50, rotateY: -4, opacity: 1, duration: .22, ease: "power2.out" }, 0)
+        .to(".casa__screen--history", { x: -470 * motion, z: -480, rotateY: 18, opacity: .78, duration: .26 }, .22)
+        .to(".casa__screen--projects", { x: 490 * motion, z: -620, rotateY: -18, opacity: .68, duration: .26 }, .28)
+        .to(".casa__photo--property", { x: -570 * motion, y: 210, z: -320, rotateZ: -7, opacity: .86, duration: .22 }, .34)
+        .to(".casa__photo--pool", { x: 590 * motion, y: -215, z: -500, rotateZ: 8, opacity: .76, duration: .22 }, .38)
+        .to(".casa__photo--heritage", { x: 430 * motion, y: 245, z: -700, rotateZ: -5, opacity: .62, duration: .22 }, .41)
         .fromTo(".casa__year", { opacity: 0, y: 44 }, { opacity: 1, y: 0, duration: .14 }, .46)
         .to(".casa__screen--main", { z: 330 * motion, scale: 1.06, duration: .2 }, .48)
         .to(".casa__world", { x: `${-7 * motion}vw`, y: `${-3 * motion}vh`, rotateY: -4, duration: .36 }, .5)
-        .to(".casa__screen, .casa__photo", { z: 1250 * motion, opacity: 0, filter: "blur(10px)", stagger: { amount: .04 }, duration: .18 }, .78)
+        .to(".casa__screen, .casa__photo", { z: 1250 * motion, opacity: 0, stagger: { amount: .04 }, duration: .18 }, .78)
         .to(".casa .project-copy, .casa__year", { opacity: 0, y: -55, duration: .14 }, .86);
 
-      gsap.set(".petricor__screen", { z: -1100, opacity: 0, filter: "blur(13px)" });
-      gsap.set(".petricor__photo", { z: -1000, opacity: 0, filter: "blur(9px)" });
+      gsap.set(".petricor__screen", { z: -1100, opacity: 0 });
+      gsap.set(".petricor__photo", { z: -1000, opacity: 0 });
       const petricor = sceneTimeline("#petricor");
       petricor.to(".petricor .motion-field", { rotate: -120, scale: 1.3, opacity: .7, duration: 1 }, 0)
         .fromTo(".petricor .motion-field i", { x: -90, opacity: 0 }, { x: 100, opacity: .65, stagger: .034, duration: .58 }, .08)
-        .to(".petricor__screen--main", { z: 0, rotateY: 4, opacity: 1, filter: "blur(0px)", duration: .22 }, 0)
-        .to(".petricor__screen--craft", { x: 510 * motion, y: 105, z: -430, rotateY: -16, opacity: .78, filter: "blur(1px)", duration: .28 }, .2)
-        .to(".petricor__photo--table", { x: -575 * motion, y: -190, z: -470, rotateZ: -8, opacity: .82, filter: "blur(0px)", duration: .23 }, .25)
-        .to(".petricor__photo--joinery", { x: -490 * motion, y: 230, z: -620, rotateZ: 7, opacity: .68, filter: "blur(1px)", duration: .23 }, .3)
-        .to(".petricor__photo--chair", { x: 600 * motion, y: -225, z: -720, rotateZ: -6, opacity: .6, filter: "blur(1px)", duration: .23 }, .34)
+        .to(".petricor__screen--main", { z: 0, rotateY: 4, opacity: 1, duration: .22 }, 0)
+        .to(".petricor__screen--craft", { x: 510 * motion, y: 105, z: -430, rotateY: -16, opacity: .78, duration: .28 }, .2)
+        .to(".petricor__photo--table", { x: -575 * motion, y: -190, z: -470, rotateZ: -8, opacity: .82, duration: .23 }, .25)
+        .to(".petricor__photo--joinery", { x: -490 * motion, y: 230, z: -620, rotateZ: 7, opacity: .68, duration: .23 }, .3)
+        .to(".petricor__photo--chair", { x: 600 * motion, y: -225, z: -720, rotateZ: -6, opacity: .6, duration: .23 }, .34)
         .fromTo(".petricor__material", { opacity: 0, x: -70 }, { opacity: 1, x: 0, stagger: .05, duration: .16 }, .34)
         .to(".petricor__world", { x: `${-12 * motion}vw`, y: `${2 * motion}vh`, rotateY: 4, duration: .4 }, .48)
-        .to(".petricor__screen, .petricor__photo", { y: -190, z: 980 * motion, opacity: 0, filter: "blur(9px)", stagger: { amount: .04 }, duration: .18 }, .78)
+        .to(".petricor__screen, .petricor__photo", { y: -190, z: 980 * motion, opacity: 0, stagger: { amount: .04 }, duration: .18 }, .78)
         .to(".petricor .project-copy, .petricor__material", { opacity: 0, y: -45, duration: .14 }, .86);
 
-      gsap.set(".ferias__screen", { z: -1250, opacity: 0, filter: "blur(14px)" });
+      gsap.set(".ferias__screen", { z: -1250, opacity: 0 });
       const ferias = sceneTimeline("#ferias");
       ferias.to(".ferias .motion-field", { rotate: 140, scale: 1.28, opacity: .68, duration: 1 }, 0)
         .fromTo(".ferias .motion-field i", { scale: .2, opacity: 0 }, { scale: 1.4, opacity: .62, stagger: .032, duration: .54 }, .1)
-        .to(".ferias__screen--calendar", { z: -40, rotateX: 2, opacity: 1, filter: "blur(0px)", duration: .22 }, 0)
-        .to(".ferias__screen--dashboard", { x: -500 * motion, z: -520, rotateY: 17, opacity: .78, filter: "blur(1px)", duration: .28 }, .18)
-        .to(".ferias__screen--properties", { x: 515 * motion, z: -660, rotateY: -18, opacity: .68, filter: "blur(2px)", duration: .28 }, .24)
-        .to(".ferias__screen--year", { x: -360 * motion, y: -285, z: -760, rotateX: -8, opacity: .52, filter: "blur(2px)", duration: .25 }, .3)
-        .to(".ferias__screen--guests", { x: 390 * motion, y: 285, z: -820, rotateX: 8, opacity: .48, filter: "blur(3px)", duration: .25 }, .34)
+        .to(".ferias__screen--calendar", { z: -40, rotateX: 2, opacity: 1, duration: .22 }, 0)
+        .to(".ferias__screen--dashboard", { x: -500 * motion, z: -520, rotateY: 17, opacity: .78, duration: .28 }, .18)
+        .to(".ferias__screen--properties", { x: 515 * motion, z: -660, rotateY: -18, opacity: .68, duration: .28 }, .24)
+        .to(".ferias__screen--year", { x: -360 * motion, y: -285, z: -760, rotateX: -8, opacity: .52, duration: .25 }, .3)
+        .to(".ferias__screen--guests", { x: 390 * motion, y: 285, z: -820, rotateX: 8, opacity: .48, duration: .25 }, .34)
         .fromTo(".ferias__metric", { opacity: 0, y: 60, scale: .92 }, { opacity: 1, y: 0, scale: 1, stagger: .055, duration: .17 }, .36)
         .to(".ferias__world", { x: `${-10 * motion}vw`, y: `${-3 * motion}vh`, rotateY: -3, duration: .4 }, .48)
         .to(".ferias__metric", { opacity: 0, y: -80, stagger: .02, duration: .12 }, .76)
-        .to(".ferias__screen", { z: 1200 * motion, opacity: 0, filter: "blur(10px)", stagger: { amount: .04 }, duration: .18 }, .78)
+        .to(".ferias__screen", { z: 1200 * motion, opacity: 0, stagger: { amount: .04 }, duration: .18 }, .78)
         .to(".ferias .project-copy", { opacity: 0, y: -55, duration: .14 }, .86);
 
-      gsap.set(".downloads__screen", { z: -1200, opacity: 0, filter: "blur(14px)" });
+      gsap.set(".downloads__screen", { z: -1200, opacity: 0 });
       const downloads = sceneTimeline("#downloads");
       downloads.to(".downloads .motion-field", { rotate: -155, scale: 1.35, opacity: .75, duration: 1 }, 0)
         .fromTo(".downloads .motion-field i", { y: -100, opacity: 0 }, { y: 120, opacity: .72, stagger: .034, duration: .58 }, .08)
-        .to(".downloads__screen--popover", { z: -40, rotateY: -3, opacity: 1, filter: "blur(0px)", duration: .22 }, 0)
-        .to(".downloads__screen--general", { x: -490 * motion, y: 70, z: -520, rotateY: 18, opacity: .75, filter: "blur(1px)", duration: .27 }, .2)
-        .to(".downloads__screen--rules", { x: 500 * motion, y: 105, z: -650, rotateY: -18, opacity: .68, filter: "blur(2px)", duration: .27 }, .26)
+        .to(".downloads__screen--popover", { z: -40, rotateY: -3, opacity: 1, duration: .22 }, 0)
+        .to(".downloads__screen--general", { x: -490 * motion, y: 70, z: -520, rotateY: 18, opacity: .75, duration: .27 }, .2)
+        .to(".downloads__screen--rules", { x: 500 * motion, y: 105, z: -650, rotateY: -18, opacity: .68, duration: .27 }, .26)
         .fromTo(".downloads__badge", { opacity: 0, scale: .6, rotate: -12 }, { opacity: 1, scale: 1, rotate: 0, duration: .2, ease: "back.out(1.7)" }, .38)
         .to(".downloads__world", { x: `${7 * motion}vw`, y: `${-3 * motion}vh`, rotateY: 4, duration: .4 }, .46)
         .to(".downloads__screen--popover", { z: 300 * motion, duration: .2 }, .5)
-        .to(".downloads__screen", { z: 1180 * motion, opacity: 0, filter: "blur(11px)", stagger: { amount: .04 }, duration: .18 }, .78)
+        .to(".downloads__screen", { z: 1180 * motion, opacity: 0, stagger: { amount: .04 }, duration: .18 }, .78)
         .to(".downloads .project-copy, .downloads__badge", { opacity: 0, y: -50, duration: .14 }, .86);
 
       const studio = sceneTimeline("#studio");
@@ -262,10 +263,11 @@ export function CinematicPortfolio() {
     }, root);
 
     const stages = Array.from(root.querySelectorAll<HTMLElement>(".stage"));
-    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => entry.target.classList.toggle("stage--far", !entry.isIntersecting)), { rootMargin: "18% 0px" });
+    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => entry.target.classList.toggle("stage--far", !entry.isIntersecting)), { rootMargin: "8% 0px" });
     stages.forEach((stage) => observer.observe(stage.parentElement ?? stage));
 
     let pointerRaf = 0;
+    let pointerRunning = false;
     let tx = 0, ty = 0, px = 0, py = 0, lx = 0, ly = 0;
     const cursor = root.querySelector<HTMLElement>(".cursor-system");
     const lightningLayer = root.querySelector<HTMLElement>(".click-fx-layer");
@@ -275,6 +277,7 @@ export function CinematicPortfolio() {
       tx = event.clientX; ty = event.clientY;
       root.classList.add("cursor-ready");
       cursor?.style.setProperty("transform", `translate3d(${tx}px,${ty}px,0)`);
+      if (!pointerRunning) { pointerRunning = true; pointerRaf = requestAnimationFrame(pointerTick); }
     };
     const pointerTick = () => {
       const dx = tx - lx, dy = ty - ly;
@@ -290,9 +293,10 @@ export function CinematicPortfolio() {
       root.style.setProperty("--parallax-y", `${(py / innerHeight - .5) * 24}px`);
       root.style.setProperty("--parallax-x-soft", `${(px / innerWidth - .5) * 12}px`);
       root.style.setProperty("--parallax-y-soft", `${(py / innerHeight - .5) * 9}px`);
-      pointerRaf = requestAnimationFrame(pointerTick);
+      if (Math.abs(tx - px) + Math.abs(ty - py) > .08 || Math.abs(tx - lx) + Math.abs(ty - ly) > .08) pointerRaf = requestAnimationFrame(pointerTick);
+      else pointerRunning = false;
     };
-    if (!coarse && !reduced) { window.addEventListener("pointermove", onPointer); pointerRaf = requestAnimationFrame(pointerTick); }
+    if (!coarse && !reduced) window.addEventListener("pointermove", onPointer);
 
     const onStrike = (event: PointerEvent) => {
       if (reduced || event.button !== 0 || !event.isPrimary || !lightningLayer) return;
@@ -395,7 +399,9 @@ export function CinematicPortfolio() {
 
     ScrollTrigger.refresh();
     return () => {
-      ctx.revert(); observer.disconnect(); lenis?.destroy(); cancelAnimationFrame(raf); cancelAnimationFrame(pointerRaf);
+      ctx.revert(); observer.disconnect();
+      if (lenisTick) gsap.ticker.remove(lenisTick);
+      lenis?.destroy(); cancelAnimationFrame(pointerRaf);
       root.classList.remove("cursor-ready"); window.removeEventListener("pointermove", onPointer); window.removeEventListener("pointerdown", onStrike); strikeTimers.forEach((timer) => window.clearTimeout(timer)); strikeFrames.forEach((frame) => cancelAnimationFrame(frame)); cleaners.forEach((clean) => clean()); jumpCleaners.forEach((clean) => clean());
     };
   }, []);
