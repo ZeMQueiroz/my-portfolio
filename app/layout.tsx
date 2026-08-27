@@ -17,7 +17,7 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://quit-stack-labs-cinematic.jmcbtq.chatgpt.site"),
+  metadataBase: new URL("https://quiet-stack-labs.vercel.app"),
   title: "Quiet Stack Labs — José Queiroz",
   description:
     "Useful software for quieter, more intentional lives. Independent product practice by José Queiroz.",
