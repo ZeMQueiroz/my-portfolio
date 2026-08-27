@@ -6,15 +6,15 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 
-const chapters = ["Enter", "My5", "NightShelf", "Weekline", "Casa do Cruzeiro", "Petricor", "Férias BV", "Downloads Organizer", "Studio", "Contact"];
+const chapters = ["Enter", "Casa da Piedade", "Petricor", "NightShelf", "Weekline", "Férias BV", "Downloads Organizer", "My5", "Studio", "Contact"];
 const projectLinks = [
-  { chapter: 1, id: "my5", label: "My5" },
-  { chapter: 2, id: "nightshelf", label: "NightShelf" },
-  { chapter: 3, id: "weekline", label: "Weekline" },
-  { chapter: 4, id: "casa", label: "Casa do Cruzeiro" },
-  { chapter: 5, id: "petricor", label: "Petricor" },
-  { chapter: 6, id: "ferias", label: "Férias BV" },
-  { chapter: 7, id: "downloads", label: "Downloads Organizer" },
+  { chapter: 1, id: "casa", label: "Casa da Piedade" },
+  { chapter: 2, id: "petricor", label: "Petricor" },
+  { chapter: 3, id: "nightshelf", label: "NightShelf" },
+  { chapter: 4, id: "weekline", label: "Weekline" },
+  { chapter: 5, id: "ferias", label: "Férias BV" },
+  { chapter: 6, id: "downloads", label: "Downloads Organizer" },
+  { chapter: 7, id: "my5", label: "My5" },
 ];
 
 function Kicker({ children, tone }: { children: React.ReactNode; tone?: string }) {
@@ -459,24 +459,43 @@ export function CinematicPortfolio() {
         </div>
       </section>
 
-      <section id="my5" className="scene scene--my5 my5" data-chapter="1">
+      <section id="casa" className="scene scene--casa showcase casa" data-chapter="1">
         <div className="stage">
-          <div className="scene-glow scene-glow--plum" /><div className="rim-disc" />
-          <ProjectCopy number="01" title="My5" category="Private emotional network" description="A private emotional network for up to five trusted adults. Share one feeling with your circle or reach one person directly; they can answer with a bounded voice note, image, or short video — no public profiles, feed, followers, popularity metrics, or emotional-data advertising." color="#7A4DFF" href="mailto:zemqueiroz@gmail.com?subject=My5%20project" linkText="Ask about My5" />
-          <div className="device-world my5__world">
-            <Phone src="/work/my5-2.png" alt="My5 circle screen" className="my5__side my5__side--a" small contain />
-            <Phone src="/work/my5-live.jpg" alt="My5 circle and emotional check-in" className="my5__hero" />
-            <Phone src="/work/my5-3.png" alt="My5 check-in screen" className="my5__side my5__side--b" small contain />
+          <div className="showcase__glow showcase__glow--casa" />
+          <MotionField />
+          <ProjectCopy number="01" title="Casa da Piedade" category="A digital home for living heritage" description="A bilingual editorial and hospitality website for the Casa de Nossa Senhora da Piedade in Ponte de Lima. It brings together five centuries of family history, classified architecture, accommodation, a living archive, and ongoing preservation projects without reducing the place to a booking page." color="#C9B58A" href="https://www.casadapiedade.pt" linkText="Visit Casa da Piedade" />
+          <div className="showcase__world casa__world">
+            <FloatingPhoto src="/work/casa-property.jpg" alt="Casa da Piedade exterior and gardens" className="casa__photo casa__photo--property" />
+            <FloatingPhoto src="/work/casa-pool.jpg" alt="Casa da Piedade pool and landscape" className="casa__photo casa__photo--pool" />
+            <FloatingPhoto src="/work/casa-heritage.jpg" alt="Casa da Piedade historic architectural detail" className="casa__photo casa__photo--heritage" />
+            <Desktop src="/work/casa-cruzeiro-history.jpg" alt="Casa da Piedade history page" className="showcase__screen casa__screen casa__screen--history" label="History · 1524 → today" />
+            <Desktop src="/work/casa-cruzeiro-home.jpg" alt="Casa da Piedade website home page" className="showcase__screen showcase__screen--main casa__screen casa__screen--main" label="casadapiedade.pt" />
+            <Desktop src="/work/casa-cruzeiro-projects.jpg" alt="Casa da Piedade archive and digitisation project" className="showcase__screen casa__screen casa__screen--projects" label="Archive · transcription · digitisation" />
           </div>
-          <span className="depth-word my5__depth depth-word--a">private</span><span className="depth-word my5__depth depth-word--b">trusted</span><span className="depth-word my5__depth depth-word--c">quiet</span>
-          <div className="transition-line my5__line" />
+          <div className="casa__year"><b>1524</b><span>A place with a memory longer than the interface.</span></div>
         </div>
       </section>
 
-      <section id="nightshelf" className="scene scene--night ns" data-chapter="2">
+      <section id="petricor" className="scene scene--petricor showcase petricor" data-chapter="2">
+        <div className="stage">
+          <div className="showcase__glow showcase__glow--petricor" />
+          <MotionField />
+          <ProjectCopy number="02" title="Petricor" category="Handcrafted woodwork portfolio" description="An image-led portfolio for a woodworking practice where material, joinery, and process carry more weight than sales chrome. The site gives custom furniture and functional objects room to breathe, while a structured work catalogue makes projects easy to explore and maintain." color="#D6A45D" href="https://petricor.pt" linkText="Visit Petricor" />
+          <div className="showcase__world petricor__world">
+            <FloatingPhoto src="/work/petricor-table.jpg" alt="Petricor handcrafted table" className="petricor__photo petricor__photo--table" />
+            <FloatingPhoto src="/work/petricor-joinery.jpg" alt="Petricor joinery detail" className="petricor__photo petricor__photo--joinery" />
+            <FloatingPhoto src="/work/petricor-chair.jpg" alt="Petricor handcrafted chair" className="petricor__photo petricor__photo--chair" />
+            <Desktop src="/work/petricor-site.webp" alt="Petricor woodworking portfolio" className="showcase__screen showcase__screen--main petricor__screen petricor__screen--main" label="petricor.pt" />
+            <Desktop src="/work/petricor-craft.webp" alt="Petricor project and craft detail" className="showcase__screen petricor__screen petricor__screen--craft" label="Material · process · object" />
+          </div>
+          <div className="petricor__materials"><span className="petricor__material">wood</span><span className="petricor__material">grain</span><span className="petricor__material">joinery</span></div>
+        </div>
+      </section>
+
+      <section id="nightshelf" className="scene scene--night ns" data-chapter="3">
         <div className="stage">
           <div className="scene-glow scene-glow--magenta" /><div className="ns__incoming" />
-          <ProjectCopy number="02" title="NightShelf" category="A personal media library" description="One quiet shelf for films, series, anime, and books. NightShelf combines discovery, a personal queue, progress tracking, and a record of what mattered — designed around the person collecting, not an algorithm competing for attention." align="right" color="#D48CFF" href="mailto:zemqueiroz@gmail.com?subject=NightShelf%20project" linkText="Ask about NightShelf" />
+          <ProjectCopy number="03" title="NightShelf" category="A personal media library" description="One quiet shelf for films, series, anime, and books. NightShelf combines discovery, a personal queue, progress tracking, and a record of what mattered — designed around the person collecting, not an algorithm competing for attention." align="right" color="#D48CFF" href="mailto:zemqueiroz@gmail.com?subject=NightShelf%20project" linkText="Ask about NightShelf" />
           <div className="device-world ns__world">
             {[5,6,7,8,2].map((n,i)=><Image width={1170} height={2532} className={`ns__panel ns__panel--${i}`} src={`/work/ns-${n}.png`} alt="" key={`${n}-${i}`} />)}
             <Phone src="/work/ns-1.png" alt="NightShelf library" className="ns__phone" />
@@ -488,9 +507,9 @@ export function CinematicPortfolio() {
         </div>
       </section>
 
-      <section id="weekline" className="scene scene--week weekline" data-chapter="3">
+      <section id="weekline" className="scene scene--week weekline" data-chapter="4">
         <div className="stage">
-          <ProjectCopy number="03" title="Weekline" category="Focus and work journal" description="A work journal built around the week rather than an endless task list. Focus sessions become a readable weekly record, with project context, self-review, shareable summaries, and a clear view of what actually moved." align="right" color="#9BC4FF" href="https://www.weekline.app" linkText="Visit Weekline" />
+          <ProjectCopy number="04" title="Weekline" category="Focus and work journal" description="A work journal built around the week rather than an endless task list. Focus sessions become a readable weekly record, with project context, self-review, shareable summaries, and a clear view of what actually moved." align="right" color="#9BC4FF" href="https://www.weekline.app" linkText="Visit Weekline" />
           <div className="weekline__set">
             <div className="weekline__rail" />
             <div className="weekline__timeline">
@@ -509,44 +528,11 @@ export function CinematicPortfolio() {
         </div>
       </section>
 
-      <section id="casa" className="scene scene--casa showcase casa" data-chapter="4">
-        <div className="stage">
-          <div className="showcase__glow showcase__glow--casa" />
-          <MotionField />
-          <ProjectCopy number="04" title="Casa do Cruzeiro" category="A digital home for living heritage" description="A bilingual editorial and hospitality website for the Casa de Nossa Senhora da Piedade in Ponte de Lima. It brings together five centuries of family history, classified architecture, accommodation, a living archive, and ongoing preservation projects without reducing the place to a booking page." color="#C9B58A" href="https://www.casadapiedade.pt" linkText="Visit Casa do Cruzeiro" />
-          <div className="showcase__world casa__world">
-            <FloatingPhoto src="/work/casa-property.jpg" alt="Casa do Cruzeiro exterior and gardens" className="casa__photo casa__photo--property" />
-            <FloatingPhoto src="/work/casa-pool.jpg" alt="Casa do Cruzeiro pool and landscape" className="casa__photo casa__photo--pool" />
-            <FloatingPhoto src="/work/casa-heritage.jpg" alt="Casa do Cruzeiro historic architectural detail" className="casa__photo casa__photo--heritage" />
-            <Desktop src="/work/casa-cruzeiro-history.jpg" alt="Casa do Cruzeiro history page" className="showcase__screen casa__screen casa__screen--history" label="History · 1524 → today" />
-            <Desktop src="/work/casa-cruzeiro-home.jpg" alt="Casa do Cruzeiro website home page" className="showcase__screen showcase__screen--main casa__screen casa__screen--main" label="casadapiedade.pt" />
-            <Desktop src="/work/casa-cruzeiro-projects.jpg" alt="Casa do Cruzeiro archive and digitisation project" className="showcase__screen casa__screen casa__screen--projects" label="Archive · transcription · digitisation" />
-          </div>
-          <div className="casa__year"><b>1524</b><span>A place with a memory longer than the interface.</span></div>
-        </div>
-      </section>
-
-      <section id="petricor" className="scene scene--petricor showcase petricor" data-chapter="5">
-        <div className="stage">
-          <div className="showcase__glow showcase__glow--petricor" />
-          <MotionField />
-          <ProjectCopy number="05" title="Petricor" category="Handcrafted woodwork portfolio" description="An image-led portfolio for a woodworking practice where material, joinery, and process carry more weight than sales chrome. The site gives custom furniture and functional objects room to breathe, while a structured work catalogue makes projects easy to explore and maintain." color="#D6A45D" href="https://petricor.pt" linkText="Visit Petricor" />
-          <div className="showcase__world petricor__world">
-            <FloatingPhoto src="/work/petricor-table.jpg" alt="Petricor handcrafted table" className="petricor__photo petricor__photo--table" />
-            <FloatingPhoto src="/work/petricor-joinery.jpg" alt="Petricor joinery detail" className="petricor__photo petricor__photo--joinery" />
-            <FloatingPhoto src="/work/petricor-chair.jpg" alt="Petricor handcrafted chair" className="petricor__photo petricor__photo--chair" />
-            <Desktop src="/work/petricor-site.webp" alt="Petricor woodworking portfolio" className="showcase__screen showcase__screen--main petricor__screen petricor__screen--main" label="petricor.pt" />
-            <Desktop src="/work/petricor-craft.webp" alt="Petricor project and craft detail" className="showcase__screen petricor__screen petricor__screen--craft" label="Material · process · object" />
-          </div>
-          <div className="petricor__materials"><span className="petricor__material">wood</span><span className="petricor__material">grain</span><span className="petricor__material">joinery</span></div>
-        </div>
-      </section>
-
-      <section id="ferias" className="scene scene--ferias showcase ferias" data-chapter="6">
+      <section id="ferias" className="scene scene--ferias showcase ferias" data-chapter="5">
         <div className="stage">
           <div className="showcase__glow showcase__glow--ferias" />
           <MotionField />
-          <ProjectCopy number="06" title="Férias BV" category="Property operations in one view" description="A full property-management workspace for the daily reality behind short stays: occupancy, revenue, costs, arrivals, departures, guests, and multiple properties. A lane-packed calendar keeps overlapping bookings legible, while live pricing, status, and notes stay close to each reservation." align="right" color="#79E0C0" href="https://feriasbv.com" linkText="Visit Férias BV" />
+          <ProjectCopy number="05" title="Férias BV" category="Property operations in one view" description="A full property-management workspace for the daily reality behind short stays: occupancy, revenue, costs, arrivals, departures, guests, and multiple properties. A lane-packed calendar keeps overlapping bookings legible, while live pricing, status, and notes stay close to each reservation." align="right" color="#79E0C0" href="https://feriasbv.com" linkText="Visit Férias BV" />
           <div className="showcase__world ferias__world">
             <Desktop src="/work/ferias-year-current.jpg" alt="Férias BV annual occupancy calendar" className="showcase__screen ferias__screen ferias__screen--year" label="Year · occupancy patterns" />
             <Desktop src="/work/ferias-dashboard-current.jpg" alt="Férias BV operating dashboard" className="showcase__screen ferias__screen ferias__screen--dashboard" label="Dashboard · arrivals · financials" />
@@ -558,17 +544,31 @@ export function CinematicPortfolio() {
         </div>
       </section>
 
-      <section id="downloads" className="scene scene--downloads showcase downloads" data-chapter="7">
+      <section id="downloads" className="scene scene--downloads showcase downloads" data-chapter="6">
         <div className="stage">
           <div className="showcase__glow showcase__glow--downloads" />
           <MotionField />
-          <ProjectCopy number="07" title="Downloads Organizer" category="Native macOS automation you can trust" description="A menu-bar utility that watches local folders and applies ordered rules to rename and move finished downloads. It starts in dry-run, ignores incomplete files, records every real action, and makes it undoable — with multi-folder support, reusable presets, rule previews, and local-only processing." color="#79B8FF" href="mailto:zemqueiroz@gmail.com?subject=Downloads%20Organizer%20project" linkText="Ask about Downloads Organizer" />
+          <ProjectCopy number="06" title="Downloads Organizer" category="Native macOS automation you can trust" description="A menu-bar utility that watches local folders and applies ordered rules to rename and move finished downloads. It starts in dry-run, ignores incomplete files, records every real action, and makes it undoable — with multi-folder support, reusable presets, rule previews, and local-only processing." color="#79B8FF" href="mailto:zemqueiroz@gmail.com?subject=Downloads%20Organizer%20project" linkText="Ask about Downloads Organizer" />
           <div className="showcase__world downloads__world">
             <Desktop src="/work/downloads-general.jpg" alt="Downloads Organizer general settings" className="showcase__screen downloads__screen downloads__screen--general" label="General · local file processing" />
             <Desktop src="/work/downloads-popover.jpg" alt="Downloads Organizer menu-bar utility" className="showcase__screen showcase__screen--main downloads__screen downloads__screen--popover" label="Downloads Organizer · live" />
             <Desktop src="/work/downloads-rules.jpg" alt="Downloads Organizer rules and preset packs" className="showcase__screen downloads__screen downloads__screen--rules" label="Rules · previews · presets" />
           </div>
           <div className="downloads__badge"><Image src="/work/downloads-organizer-icon.webp" alt="Downloads Organizer app icon" width={112} height={112} /><span>Local files.<br />Reversible actions.</span></div>
+        </div>
+      </section>
+
+      <section id="my5" className="scene scene--my5 my5" data-chapter="7">
+        <div className="stage">
+          <div className="scene-glow scene-glow--plum" /><div className="rim-disc" />
+          <ProjectCopy number="07" title="My5" category="Private emotional network" description="A private emotional network for up to five trusted adults. Share one feeling with your circle or reach one person directly; they can answer with a bounded voice note, image, or short video — no public profiles, feed, followers, popularity metrics, or emotional-data advertising." color="#7A4DFF" href="mailto:zemqueiroz@gmail.com?subject=My5%20project" linkText="Ask about My5" />
+          <div className="device-world my5__world">
+            <Phone src="/work/my5-2.png" alt="My5 circle screen" className="my5__side my5__side--a" small contain />
+            <Phone src="/work/my5-live.jpg" alt="My5 circle and emotional check-in" className="my5__hero" />
+            <Phone src="/work/my5-3.png" alt="My5 check-in screen" className="my5__side my5__side--b" small contain />
+          </div>
+          <span className="depth-word my5__depth depth-word--a">private</span><span className="depth-word my5__depth depth-word--b">trusted</span><span className="depth-word my5__depth depth-word--c">quiet</span>
+          <div className="transition-line my5__line" />
         </div>
       </section>
 
