@@ -1,4 +1,4 @@
-:root { --ink:#030405; --white:#e9edf2; --muted:#8e96a3; --body:#b9c0cb; --blue:#3f7bff; --ice:#9bc4ff; --violet:#7a4dff; --scroll:0%; }
+:root { --ink:#030405; --white:#e9edf2; --muted:#8e96a3; --body:#b9c0cb; --blue:#3f7bff; --ice:#9bc4ff; --violet:#7a4dff; --scroll:0%; --project-jump-safe:240px; }
 * { box-sizing:border-box; }
 html { background:var(--ink); scroll-behavior:auto; }
 body { margin:0; background:var(--ink); color:var(--white); font-family:var(--font-sora),sans-serif; font-weight:300; overflow-x:hidden; }
@@ -196,6 +196,11 @@ a:focus-visible{outline:1px solid #9bc4ff;outline-offset:6px}
 .project-copy p{margin-bottom:0;color:#e0e5ec;text-shadow:0 2px 5px #000,0 0 20px #000}
 .project-copy__category,.project-copy .kicker{color:#bcc3ce;text-shadow:0 2px 8px #000,0 0 18px #000}
 .project-copy__link{color:#f0f5fb;text-shadow:0 2px 8px #000;border-color:rgba(220,232,255,.58)}
+
+/* Keep right-aligned project stories out of the fixed project-jump rail. */
+@media (min-width:821px){
+  .project-copy--right{right:var(--project-jump-safe)}
+}
 
 /* A light spatial field gives the later chapters the same depth as the mobile work */
 .motion-field{position:absolute;z-index:1;inset:-28%;border-radius:50%;opacity:.36;pointer-events:none;will-change:transform,opacity;background:repeating-radial-gradient(circle at 50% 50%,transparent 0 86px,rgba(233,237,242,.042) 87px,transparent 88px);mask-image:radial-gradient(circle,#000 0 42%,transparent 72%)}
