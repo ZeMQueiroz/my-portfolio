@@ -49,8 +49,12 @@ function PortraitScreen({ src, alt, className = "" }: { src: string; alt: string
   return <figure className={`portrait-screen ${className}`}><Image src={src} alt={alt} fill sizes="(max-width: 600px) 44vw, 360px" /></figure>;
 }
 
-function FloatingPhoto({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
-  return <figure className={`floating-photo ${className}`}><Image src={src} alt={alt} fill sizes="(max-width: 820px) 38vw, 320px" /></figure>;
+function FloatingPhoto({ src, alt, className = "", contain = false }: { src: string; alt: string; className?: string; contain?: boolean }) {
+  return <figure className={`floating-photo ${className}`}><Image src={src} alt={alt} fill sizes="(max-width: 820px) 38vw, 320px" className={contain ? "floating-photo__image--contain" : undefined} /></figure>;
+}
+
+function NativeStrip({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
+  return <figure className={`native-strip ${className}`}><Image src={src} alt={alt} fill sizes="(max-width: 820px) 62vw, 560px" /></figure>;
 }
 
 function MotionField() {
@@ -204,6 +208,8 @@ export function CinematicPortfolio() {
         .to(".petricor__photo--table", { x: -575 * motion, y: -190, z: -470, rotateZ: -8, opacity: .82, duration: .23 }, .25)
         .to(".petricor__photo--joinery", { x: -490 * motion, y: 230, z: -620, rotateZ: 7, opacity: .68, duration: .23 }, .3)
         .to(".petricor__photo--chair", { x: 600 * motion, y: -225, z: -720, rotateZ: -6, opacity: .6, duration: .23 }, .34)
+        .to(".petricor__photo--pattern", { x: 185 * motion, y: -315, z: -840, rotateZ: 15, opacity: .54, duration: .24 }, .36)
+        .to(".petricor__photo--sketch", { x: -170 * motion, y: 325, z: -900, rotateZ: -10, opacity: .5, duration: .24 }, .39)
         .fromTo(".petricor__material", { opacity: 0, x: -70 }, { opacity: 1, x: 0, stagger: .05, duration: .16 }, .34)
         .to(".petricor__world", { x: `${-12 * motion}vw`, y: `${2 * motion}vh`, rotateY: 4, duration: .4 }, .48)
         .to(".petricor__screen, .petricor__photo", { y: -190, z: 980 * motion, opacity: 0, stagger: { amount: .04 }, duration: .18 }, .78)
@@ -218,23 +224,26 @@ export function CinematicPortfolio() {
         .to(".ferias__screen--properties", { x: 515 * motion, z: -660, rotateY: -18, opacity: .68, duration: .28 }, .24)
         .to(".ferias__screen--year", { x: -360 * motion, y: -285, z: -760, rotateX: -8, opacity: .52, duration: .25 }, .3)
         .to(".ferias__screen--guests", { x: 390 * motion, y: 285, z: -820, rotateX: 8, opacity: .48, duration: .25 }, .34)
+        .to(".ferias__screen--timeline", { x: 80 * motion, y: -330, z: -930, rotateX: -10, opacity: .42, duration: .25 }, .36)
+        .to(".ferias__screen--guest-history", { x: -95 * motion, y: 325, z: -980, rotateX: 10, opacity: .4, duration: .25 }, .39)
         .fromTo(".ferias__metric", { opacity: 0, y: 60, scale: .92 }, { opacity: 1, y: 0, scale: 1, stagger: .055, duration: .17 }, .36)
         .to(".ferias__world", { x: `${-10 * motion}vw`, y: `${-3 * motion}vh`, rotateY: -3, duration: .4 }, .48)
         .to(".ferias__metric", { opacity: 0, y: -80, stagger: .02, duration: .12 }, .76)
         .to(".ferias__screen", { z: 1200 * motion, opacity: 0, stagger: { amount: .04 }, duration: .18 }, .78)
         .to(".ferias .project-copy", { opacity: 0, y: -55, duration: .14 }, .86);
 
-      gsap.set(".downloads__screen", { z: -1200, opacity: 0 });
+      gsap.set(".downloads__screen, .downloads__preview", { z: -1200, opacity: 0 });
       const downloads = sceneTimeline("#downloads");
       downloads.to(".downloads .motion-field", { rotate: -155, scale: 1.35, opacity: .75, duration: 1 }, 0)
         .fromTo(".downloads .motion-field i", { y: -100, opacity: 0 }, { y: 120, opacity: .72, stagger: .034, duration: .58 }, .08)
         .to(".downloads__screen--popover", { z: -40, rotateY: -3, opacity: 1, duration: .22 }, 0)
         .to(".downloads__screen--general", { x: -490 * motion, y: 70, z: -520, rotateY: 18, opacity: .75, duration: .27 }, .2)
         .to(".downloads__screen--rules", { x: 500 * motion, y: 105, z: -650, rotateY: -18, opacity: .68, duration: .27 }, .26)
+        .to(".downloads__preview", { x: 130 * motion, y: -300, z: -760, rotateX: -8, rotateZ: 2, opacity: .7, duration: .24 }, .32)
         .fromTo(".downloads__badge", { opacity: 0, scale: .6, rotate: -12 }, { opacity: 1, scale: 1, rotate: 0, duration: .2, ease: "back.out(1.7)" }, .38)
         .to(".downloads__world", { x: `${7 * motion}vw`, y: `${-3 * motion}vh`, rotateY: 4, duration: .4 }, .46)
         .to(".downloads__screen--popover", { z: 300 * motion, duration: .2 }, .5)
-        .to(".downloads__screen", { z: 1180 * motion, opacity: 0, stagger: { amount: .04 }, duration: .18 }, .78)
+        .to(".downloads__screen, .downloads__preview", { z: 1180 * motion, opacity: 0, stagger: { amount: .04 }, duration: .18 }, .78)
         .to(".downloads .project-copy, .downloads__badge", { opacity: 0, y: -50, duration: .14 }, .86);
 
       const studio = sceneTimeline("#studio");
@@ -498,6 +507,8 @@ export function CinematicPortfolio() {
             <FloatingPhoto src="/work/petricor-table.jpg" alt="Petricor handcrafted table" className="petricor__photo petricor__photo--table" />
             <FloatingPhoto src="/work/petricor-joinery.jpg" alt="Petricor joinery detail" className="petricor__photo petricor__photo--joinery" />
             <FloatingPhoto src="/work/petricor-chair.jpg" alt="Petricor handcrafted chair" className="petricor__photo petricor__photo--chair" />
+            <FloatingPhoto src="/work/petricor-pattern.webp" alt="Petricor geometric tabletop pattern study" className="petricor__photo petricor__photo--pattern" contain />
+            <FloatingPhoto src="/work/petricor-sketch.webp" alt="Petricor chair construction drawing" className="petricor__photo petricor__photo--sketch" contain />
             <Desktop src="/work/petricor-site.webp" alt="Petricor woodworking portfolio" className="showcase__screen showcase__screen--main petricor__screen petricor__screen--main" label="petricor.pt" />
             <Desktop src="/work/petricor-craft.webp" alt="Petricor project and craft detail" className="showcase__screen petricor__screen petricor__screen--craft" label="Material · process · object" />
           </div>
@@ -547,11 +558,13 @@ export function CinematicPortfolio() {
           <MotionField />
           <ProjectCopy number="05" title="Férias BV" category="Property operations in one view" description="A full property-management workspace for the daily reality behind short stays: occupancy, revenue, costs, arrivals, departures, guests, and multiple properties. A lane-packed calendar keeps overlapping bookings legible, while live pricing, status, and notes stay close to each reservation." contribution="Product strategy, operational modelling, design, and development" decision="Put status, season-aware pricing, guests, and costs around one legible booking calendar." align="right" color="#79E0C0" href="https://feriasbv.com" linkText="Visit Férias BV" />
           <div className="showcase__world ferias__world">
-            <Desktop src="/work/ferias-year-current.jpg" alt="Férias BV annual occupancy calendar" className="showcase__screen ferias__screen ferias__screen--year" label="Year · occupancy patterns" />
-            <Desktop src="/work/ferias-dashboard-current.jpg" alt="Férias BV operating dashboard" className="showcase__screen ferias__screen ferias__screen--dashboard" label="Dashboard · arrivals · financials" />
-            <Desktop src="/work/ferias-calendar-current.jpg" alt="Férias BV visual booking calendar" className="showcase__screen showcase__screen--main ferias__screen ferias__screen--calendar" label="Monthly booking calendar" />
-            <Desktop src="/work/ferias-properties-current.jpg" alt="Férias BV property and rate management" className="showcase__screen ferias__screen ferias__screen--properties" label="Properties · rates · costs" />
-            <Desktop src="/work/ferias-guests-current.jpg" alt="Férias BV guest history and revenue view" className="showcase__screen ferias__screen ferias__screen--guests" label="Guests · stays · revenue" />
+            <Desktop src="/work/ferias-year.webp" alt="Férias BV annual occupancy calendar" className="showcase__screen ferias__screen ferias__screen--year" label="Year · occupancy patterns" />
+            <Desktop src="/work/ferias-dashboard.webp" alt="Férias BV operating dashboard" className="showcase__screen ferias__screen ferias__screen--dashboard" label="Dashboard · arrivals · financials" />
+            <Desktop src="/work/ferias-month.webp" alt="Férias BV visual booking calendar" className="showcase__screen showcase__screen--main ferias__screen ferias__screen--calendar" label="Monthly booking calendar" />
+            <Desktop src="/work/ferias-properties.webp" alt="Férias BV property and rate management" className="showcase__screen ferias__screen ferias__screen--properties" label="Properties · rates · costs" />
+            <Desktop src="/work/ferias-guests.webp" alt="Férias BV guest history and revenue view" className="showcase__screen ferias__screen ferias__screen--guests" label="Guests · stays · revenue" />
+            <Desktop src="/work/ferias-timeline.webp" alt="Férias BV timeline calendar with booking details" className="showcase__screen ferias__screen ferias__screen--timeline" label="Timeline · booking details" />
+            <Desktop src="/work/ferias-guest-history.webp" alt="Férias BV expanded guest stay history" className="showcase__screen ferias__screen ferias__screen--guest-history" label="Guest profile · stay history" />
           </div>
           <div className="ferias__metrics"><span className="ferias__metric"><b>3</b> calendar views</span><span className="ferias__metric"><b>5</b> booking states</span><span className="ferias__metric"><b>1</b> operating picture</span></div>
         </div>
@@ -566,6 +579,7 @@ export function CinematicPortfolio() {
             <Desktop src="/work/downloads-general.jpg" alt="Downloads Organizer general settings" className="showcase__screen downloads__screen downloads__screen--general" label="General · local file processing" />
             <Desktop src="/work/downloads-popover.jpg" alt="Downloads Organizer menu-bar utility" className="showcase__screen showcase__screen--main downloads__screen downloads__screen--popover" label="Downloads Organizer · live" />
             <Desktop src="/work/downloads-rules.jpg" alt="Downloads Organizer rules and preset packs" className="showcase__screen downloads__screen downloads__screen--rules" label="Rules · previews · presets" />
+            <NativeStrip src="/work/downloads-preview.webp" alt="Downloads Organizer dry-run preview result" className="downloads__preview" />
           </div>
           <div className="downloads__badge"><Image src="/work/downloads-organizer-icon.webp" alt="Downloads Organizer app icon" width={112} height={112} /><span>Local files.<br />Reversible actions.</span></div>
         </div>
