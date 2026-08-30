@@ -415,6 +415,7 @@ export function CinematicPortfolio() {
 
   return (
     <main ref={rootRef} className="portfolio" id="top">
+      <a className="skip-link" href="#casa">Skip intro to selected work</a>
       <div className={`loader ${loaded ? "loader--done" : ""}`} aria-hidden="true">
         <div className="loader__ring"><i /><i /></div>
         <div className="loader__brand">
@@ -587,7 +588,7 @@ export function CinematicPortfolio() {
       <section id="studio" className="scene scene--studio studio" data-chapter="8">
         <div className="stage"><div className="studio__light" />
           <div className="studio__content"><Kicker><span className="studio__kicker">The studio</span></Kicker>
-            <div className="studio__reveal"><div><h2>A studio name for one person</h2></div><div><h2>who likes making the whole thing.</h2></div><div className="studio__paragraph"><p>Quiet Stack Labs is José Queiroz’s independent product practice — a place for turning stubborn problems into thoughtful, useful software.</p></div><div className="studio__paragraph"><p>I work across strategy, systems, interface, interaction, and engineering. The interesting part is rarely one layer. It is how all of them meet.</p></div></div>
+            <div className="studio__reveal"><div><h2>A studio name for one person.</h2></div><div><h2>One person who makes the whole thing.</h2></div><div className="studio__paragraph"><p>I’m José Queiroz, an independent product designer and engineer. Quiet Stack Labs is where I turn stubborn problems into thoughtful, useful software.</p></div><div className="studio__paragraph"><p>I move from the problem and product model through interface, motion, implementation, and launch. That continuity is the point: clear decisions and a product that still feels like one idea.</p></div></div>
             <div className="studio__disciplines">{["Product strategy","Interface design","Interaction","Mobile","Web","Systems","Engineering","Automation"].map(x=><span key={x}>{x}</span>)}</div>
           </div>
         </div>
@@ -595,8 +596,9 @@ export function CinematicPortfolio() {
 
       <section id="contact" className="scene scene--contact contact" data-chapter="9">
         <div className="stage"><div className="contact__points">{Array.from({length:7},(_,i)=><i key={i} style={{left:`${12+(i*19)%78}%`,top:`${14+(i*29)%70}%`}} />)}</div>
-          <div className="contact__content"><Kicker>Contact</Kicker><div className="contact__reveal"><div><h2>Have a problem worth</h2></div><div><h2>getting close to?</h2></div></div><p className="contact__copy">I’m interested in thoughtful products, unusual systems, and ideas that deserve a clearer shape.</p>
-            <div className="contact__links"><a href="mailto:zemqueiroz@gmail.com" data-magnetic><span>01</span>Email<i>↗</i></a><a href="https://github.com/ZeMQueiroz" target="_blank" rel="noreferrer" data-magnetic><span>02</span>GitHub<i>↗</i></a><a href="https://www.linkedin.com/in/josemqueiroz/" target="_blank" rel="noreferrer" data-magnetic><span>03</span>LinkedIn<i>↗</i></a></div>
+          <div className="contact__content"><Kicker>Start a conversation</Kicker><div className="contact__reveal"><div><h2>Have a problem worth</h2></div><div><h2>getting close to?</h2></div></div><p className="contact__copy">Tell me what you’re building, where it feels stuck, and what a good outcome would look like. I work directly across product thinking, design, and implementation.</p>
+            <div className="contact__availability"><i />For selected collaborations, independent products, and thoughtful systems.</div>
+            <div className="contact__links"><a href="mailto:zemqueiroz@gmail.com?subject=Project%20conversation%20%E2%80%94%20Quiet%20Stack%20Labs" data-magnetic><span>01</span>Start a conversation<i>↗</i></a><a href="https://github.com/ZeMQueiroz" target="_blank" rel="noopener noreferrer" data-magnetic><span>02</span>GitHub<i>↗</i></a><a href="https://www.linkedin.com/in/josemqueiroz/" target="_blank" rel="noopener noreferrer" data-magnetic><span>03</span>LinkedIn<i>↗</i></a></div>
           </div>
           <div className="contact__dark" />
           <div className="contact__mark">
@@ -605,6 +607,7 @@ export function CinematicPortfolio() {
               <b>Quiet Stack</b><em>Labs</em>
             </div>
             <small>Personal work by José Queiroz</small>
+            <a className="contact__final-link" href="mailto:zemqueiroz@gmail.com?subject=Project%20conversation%20%E2%80%94%20Quiet%20Stack%20Labs" data-magnetic>Start a conversation <span>↗</span></a>
           </div>
         </div>
       </section>

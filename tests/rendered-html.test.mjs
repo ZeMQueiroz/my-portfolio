@@ -37,19 +37,26 @@ test("server-renders the Quiet Stack Labs portfolio", async () => {
   assert.doesNotMatch(html, /Your site is taking shape|Building your site/);
 });
 
-test("keeps project storytelling and motion fallbacks in the source", async () => {
-  const [page, component, css, layout, packageJson] = await Promise.all([
+test("keeps project storytelling, launch metadata, and motion fallbacks in the source", async () => {
+  const [page, component, css, layout, robots, sitemap, packageJson] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/cinematic-portfolio.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/robots.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);
 
   assert.match(page, /<CinematicPortfolio \/>/);
-  assert.match(layout, /metadataBase: new URL\("https:\/\/quiet-stack-labs\.vercel\.app"\)/);
+  assert.match(layout, /metadataBase: new URL\("https:\/\/www\.quietstacklabs\.com"\)/);
+  assert.match(layout, /alternates: \{ canonical: "\/" \}/);
+  assert.match(robots, /quietstacklabs\.com\/sitemap\.xml/);
+  assert.match(sitemap, /url: "https:\/\/www\.quietstacklabs\.com"/);
   assert.match(component, /<dt>My role<\/dt>/);
   assert.match(component, /<dt>Defining decision<\/dt>/);
+  assert.match(component, /className="skip-link"/);
+  assert.match(component, /className="contact__final-link"/);
   assert.match(component, /href="https:\/\/www\.nightshelf\.pt"/);
   assert.match(component, /!reduced && !coarse/);
   assert.match(component, /rootMargin: "35% 0px"/);
