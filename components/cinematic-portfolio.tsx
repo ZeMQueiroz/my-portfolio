@@ -57,7 +57,7 @@ function MotionField() {
   return <div className="motion-field" aria-hidden="true">{Array.from({ length: 10 }, (_, index) => <i key={index} />)}</div>;
 }
 
-function ProjectCopy({ number, title, category, description, align = "left", color, href, linkText = "Visit project" }: { number: string; title: string; category: string; description: string; align?: "left" | "right"; color: string; href?: string; linkText?: string }) {
+function ProjectCopy({ number, title, category, description, contribution, decision, align = "left", color, href, linkText = "Visit project" }: { number: string; title: string; category: string; description: string; contribution: string; decision: string; align?: "left" | "right"; color: string; href?: string; linkText?: string }) {
   const external = href?.startsWith("http");
   return (
     <div className={`project-copy project-copy--${align}`}>
@@ -65,6 +65,10 @@ function ProjectCopy({ number, title, category, description, align = "left", col
       <h2>{title}</h2>
       <div className="project-copy__category">{category}</div>
       <p>{description}</p>
+      <dl className="project-copy__details">
+        <div><dt>My role</dt><dd>{contribution}</dd></div>
+        <div><dt>Defining decision</dt><dd>{decision}</dd></div>
+      </dl>
       {href ? <a className="project-copy__link" href={href} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined} data-magnetic>{linkText} <span>↗</span></a> : null}
     </div>
   );
@@ -81,7 +85,8 @@ export function CinematicPortfolio() {
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const timer = window.setTimeout(() => setLoaded(true), reduced ? 30 : 2850);
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    const timer = window.setTimeout(() => setLoaded(true), reduced ? 30 : coarse ? 1700 : 2850);
     const forceDismiss = () => document.visibilityState === "visible" && window.setTimeout(() => setLoaded(true), 300);
     document.addEventListener("visibilitychange", forceDismiss);
     return () => { window.clearTimeout(timer); document.removeEventListener("visibilitychange", forceDismiss); };
@@ -93,7 +98,8 @@ export function CinematicPortfolio() {
     gsap.registerPlugin(ScrollTrigger);
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const coarse = window.matchMedia("(pointer: coarse)").matches;
-    const motion = reduced ? 0.3 : 1.4;
+    const motion = reduced ? 0.24 : coarse ? 0.72 : 1.4;
+    root.dataset.motion = reduced ? "reduced" : coarse ? "compact" : "full";
     let lenis: Lenis | null = null;
     let lenisTick: ((time: number) => void) | null = null;
 
@@ -108,7 +114,7 @@ export function CinematicPortfolio() {
     const ctx = gsap.context(() => {
       const sceneTimeline = (selector: string) => gsap.timeline({
         defaults: { ease: "none", force3D: true },
-        scrollTrigger: { trigger: selector, start: "top top", end: "bottom bottom", scrub: !reduced, invalidateOnRefresh: true },
+        scrollTrigger: { trigger: selector, start: "top top", end: "bottom bottom", scrub: reduced ? false : coarse ? 0.35 : true, invalidateOnRefresh: true },
       });
 
       const hero = sceneTimeline("#hero");
@@ -263,7 +269,7 @@ export function CinematicPortfolio() {
     }, root);
 
     const stages = Array.from(root.querySelectorAll<HTMLElement>(".stage"));
-    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => entry.target.classList.toggle("stage--far", !entry.isIntersecting)), { rootMargin: "8% 0px" });
+    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => entry.target.classList.toggle("stage--far", !entry.isIntersecting)), { rootMargin: "35% 0px" });
     stages.forEach((stage) => observer.observe(stage.parentElement ?? stage));
 
     let pointerRaf = 0;
@@ -374,9 +380,9 @@ export function CinematicPortfolio() {
         strikeTimers.push(window.setTimeout(() => { cancelAnimationFrame(frame); strikeFrames.delete(frame); strike.remove(); }, 900));
       } else strikeTimers.push(window.setTimeout(() => strike.remove(), 900));
     };
-    if (!reduced) window.addEventListener("pointerdown", onStrike);
+    if (!reduced && !coarse) window.addEventListener("pointerdown", onStrike);
 
-    const magnetic = Array.from(root.querySelectorAll<HTMLElement>("[data-magnetic]"));
+    const magnetic = !reduced && !coarse ? Array.from(root.querySelectorAll<HTMLElement>("[data-magnetic]")) : [];
     const cleaners = magnetic.map((el) => {
       const move = (event: PointerEvent) => { const r = el.getBoundingClientRect(); el.style.transform = `translate(${(event.clientX - r.left - r.width / 2) * .22}px, ${(event.clientY - r.top - r.height / 2) * .3}px)`; cursor?.classList.add("cursor-system--active"); };
       const leave = () => { el.style.transform = "translate(0,0)"; cursor?.classList.remove("cursor-system--active"); };
@@ -402,6 +408,7 @@ export function CinematicPortfolio() {
       ctx.revert(); observer.disconnect();
       if (lenisTick) gsap.ticker.remove(lenisTick);
       lenis?.destroy(); cancelAnimationFrame(pointerRaf);
+      delete root.dataset.motion;
       root.classList.remove("cursor-ready"); window.removeEventListener("pointermove", onPointer); window.removeEventListener("pointerdown", onStrike); strikeTimers.forEach((timer) => window.clearTimeout(timer)); strikeFrames.forEach((frame) => cancelAnimationFrame(frame)); cleaners.forEach((clean) => clean()); jumpCleaners.forEach((clean) => clean());
     };
   }, []);
@@ -424,7 +431,6 @@ export function CinematicPortfolio() {
       <header className="chrome-header">
         <a href="#top" aria-label="Quiet Stack Labs — back to the beginning" data-magnetic>
           <Image className="chrome-header__logo" src="/qsl-icon.png" alt="" width={38} height={39} priority />
-          <span>Quiet Stack Labs</span>
         </a>
         <span>Personal product studio</span>
       </header>
@@ -469,7 +475,7 @@ export function CinematicPortfolio() {
         <div className="stage">
           <div className="showcase__glow showcase__glow--casa" />
           <MotionField />
-          <ProjectCopy number="01" title="Casa da Piedade" category="A digital home for living heritage" description="A bilingual editorial and hospitality website for the Casa de Nossa Senhora da Piedade in Ponte de Lima. It brings together five centuries of family history, classified architecture, accommodation, a living archive, and ongoing preservation projects without reducing the place to a booking page." color="#C9B58A" href="https://www.casadapiedade.pt" linkText="Visit Casa da Piedade" />
+          <ProjectCopy number="01" title="Casa da Piedade" category="A digital home for living heritage" description="A bilingual editorial and hospitality website for the Casa de Nossa Senhora da Piedade in Ponte de Lima. It brings together five centuries of family history, classified architecture, accommodation, a living archive, and ongoing preservation projects without reducing the place to a booking page." contribution="Content architecture, interface design, and development" decision="Build one bilingual system for history, stays, preservation projects, and editorial publishing." color="#C9B58A" href="https://www.casadapiedade.pt" linkText="Visit Casa da Piedade" />
           <div className="showcase__world casa__world">
             <FloatingPhoto src="/work/casa-property.jpg" alt="Casa da Piedade exterior and gardens" className="casa__photo casa__photo--property" />
             <FloatingPhoto src="/work/casa-pool.jpg" alt="Casa da Piedade pool and landscape" className="casa__photo casa__photo--pool" />
@@ -486,7 +492,7 @@ export function CinematicPortfolio() {
         <div className="stage">
           <div className="showcase__glow showcase__glow--petricor" />
           <MotionField />
-          <ProjectCopy number="02" title="Petricor" category="Handcrafted woodwork portfolio" description="An image-led portfolio for a woodworking practice where material, joinery, and process carry more weight than sales chrome. The site gives custom furniture and functional objects room to breathe, while a structured work catalogue makes projects easy to explore and maintain." color="#D6A45D" href="https://petricor.pt" linkText="Visit Petricor" />
+          <ProjectCopy number="02" title="Petricor" category="Handcrafted woodwork portfolio" description="An image-led portfolio for a woodworking practice where material, joinery, and process carry more weight than sales chrome. The site gives custom furniture and functional objects room to breathe, while a structured work catalogue makes projects easy to explore and maintain." contribution="Art direction, information architecture, design, and development" decision="Let the material lead, then structure every object as a maintainable project record." color="#D6A45D" href="https://petricor.pt" linkText="Visit Petricor" />
           <div className="showcase__world petricor__world">
             <FloatingPhoto src="/work/petricor-table.jpg" alt="Petricor handcrafted table" className="petricor__photo petricor__photo--table" />
             <FloatingPhoto src="/work/petricor-joinery.jpg" alt="Petricor joinery detail" className="petricor__photo petricor__photo--joinery" />
@@ -501,7 +507,7 @@ export function CinematicPortfolio() {
       <section id="nightshelf" className="scene scene--night ns" data-chapter="3">
         <div className="stage">
           <div className="scene-glow scene-glow--magenta" /><div className="ns__incoming" />
-          <ProjectCopy number="03" title="NightShelf" category="A personal media library" description="One quiet shelf for films, series, anime, and books. NightShelf combines discovery, a personal queue, progress tracking, and a record of what mattered — designed around the person collecting, not an algorithm competing for attention." align="right" color="#D48CFF" href="mailto:zemqueiroz@gmail.com?subject=NightShelf%20project" linkText="Ask about NightShelf" />
+          <ProjectCopy number="03" title="NightShelf" category="A personal media library" description="A swipe-first place to discover, save, and track films, series, anime, and books. NightShelf separates the lightness of discovery from the commitment of a personal library, then brings progress, ratings, and meaningful recommendations back around what the person chose." contribution="Product strategy, interaction design, full-stack, and mobile development" decision="A swipe saves to Queue first; moving something into the Library remains a deliberate second step." align="right" color="#D48CFF" href="https://www.nightshelf.pt" linkText="Visit NightShelf" />
           <div className="device-world ns__world">
             {[5,6,7,8,2].map((n,i)=><Image width={1170} height={2532} className={`ns__panel ns__panel--${i}`} src={`/work/ns-${n}.png`} alt="" key={`${n}-${i}`} />)}
             <Phone src="/work/ns-1.png" alt="NightShelf library" className="ns__phone" />
@@ -515,7 +521,7 @@ export function CinematicPortfolio() {
 
       <section id="weekline" className="scene scene--week weekline" data-chapter="4">
         <div className="stage">
-          <ProjectCopy number="04" title="Weekline" category="Focus and work journal" description="A work journal built around the week rather than an endless task list. Focus sessions become a readable weekly record, with project context, self-review, shareable summaries, and a clear view of what actually moved." align="right" color="#9BC4FF" href="https://www.weekline.app" linkText="Visit Weekline" />
+          <ProjectCopy number="04" title="Weekline" category="Focus and work journal" description="A work journal built around the week rather than an endless task list. Focus sessions become a readable weekly record, with project context, self-review, visual summaries, and a clear view of what actually moved." contribution="Product design, interaction design, and full-stack development" decision="Make every focus session part of a weekly record that can be reviewed, copied, or exported." align="right" color="#9BC4FF" href="https://www.weekline.app" linkText="Visit Weekline" />
           <div className="weekline__set">
             <div className="weekline__rail" />
             <div className="weekline__timeline">
@@ -538,7 +544,7 @@ export function CinematicPortfolio() {
         <div className="stage">
           <div className="showcase__glow showcase__glow--ferias" />
           <MotionField />
-          <ProjectCopy number="05" title="Férias BV" category="Property operations in one view" description="A full property-management workspace for the daily reality behind short stays: occupancy, revenue, costs, arrivals, departures, guests, and multiple properties. A lane-packed calendar keeps overlapping bookings legible, while live pricing, status, and notes stay close to each reservation." align="right" color="#79E0C0" href="https://feriasbv.com" linkText="Visit Férias BV" />
+          <ProjectCopy number="05" title="Férias BV" category="Property operations in one view" description="A full property-management workspace for the daily reality behind short stays: occupancy, revenue, costs, arrivals, departures, guests, and multiple properties. A lane-packed calendar keeps overlapping bookings legible, while live pricing, status, and notes stay close to each reservation." contribution="Product strategy, operational modelling, design, and development" decision="Put status, season-aware pricing, guests, and costs around one legible booking calendar." align="right" color="#79E0C0" href="https://feriasbv.com" linkText="Visit Férias BV" />
           <div className="showcase__world ferias__world">
             <Desktop src="/work/ferias-year-current.jpg" alt="Férias BV annual occupancy calendar" className="showcase__screen ferias__screen ferias__screen--year" label="Year · occupancy patterns" />
             <Desktop src="/work/ferias-dashboard-current.jpg" alt="Férias BV operating dashboard" className="showcase__screen ferias__screen ferias__screen--dashboard" label="Dashboard · arrivals · financials" />
@@ -554,7 +560,7 @@ export function CinematicPortfolio() {
         <div className="stage">
           <div className="showcase__glow showcase__glow--downloads" />
           <MotionField />
-          <ProjectCopy number="06" title="Downloads Organizer" category="Native macOS automation you can trust" description="A menu-bar utility that watches local folders and applies ordered rules to rename and move finished downloads. It starts in dry-run, ignores incomplete files, records every real action, and makes it undoable — with multi-folder support, reusable presets, rule previews, and local-only processing." color="#79B8FF" href="mailto:zemqueiroz@gmail.com?subject=Downloads%20Organizer%20project" linkText="Ask about Downloads Organizer" />
+          <ProjectCopy number="06" title="Downloads Organizer" category="Native macOS automation you can trust" description="A menu-bar utility that watches local folders and applies ordered rules to rename and move finished downloads. It starts in dry-run, ignores incomplete files, records every real action, and makes it undoable — with multi-folder support, reusable presets, rule previews, and local-only processing." contribution="Product strategy, native macOS design, and Swift engineering" decision="Preview first, wait for completed files, and make every real move visible and undoable." color="#79B8FF" href="mailto:zemqueiroz@gmail.com?subject=Downloads%20Organizer%20project" linkText="Ask about Downloads Organizer" />
           <div className="showcase__world downloads__world">
             <Desktop src="/work/downloads-general.jpg" alt="Downloads Organizer general settings" className="showcase__screen downloads__screen downloads__screen--general" label="General · local file processing" />
             <Desktop src="/work/downloads-popover.jpg" alt="Downloads Organizer menu-bar utility" className="showcase__screen showcase__screen--main downloads__screen downloads__screen--popover" label="Downloads Organizer · live" />
@@ -567,7 +573,7 @@ export function CinematicPortfolio() {
       <section id="my5" className="scene scene--my5 my5" data-chapter="7">
         <div className="stage">
           <div className="scene-glow scene-glow--plum" /><div className="rim-disc" />
-          <ProjectCopy number="07" title="My5" category="Private emotional network" description="A private emotional network for up to five trusted adults. Share one feeling with your circle or reach one person directly; they can answer with a bounded voice note, image, or short video — no public profiles, feed, followers, popularity metrics, or emotional-data advertising." color="#7A4DFF" href="mailto:zemqueiroz@gmail.com?subject=My5%20project" linkText="Ask about My5" />
+          <ProjectCopy number="07" title="My5" category="Private emotional network" description="A private emotional network for up to five trusted adults. Share one feeling with your circle or reach one person directly; they can answer with a bounded voice note, image, or short video — no public profiles, feed, followers, popularity metrics, or emotional-data advertising." contribution="Product strategy, trust model, mobile design, and engineering" decision="No chat or feed: one feeling, one bounded response, then the private moment disappears." color="#7A4DFF" href="mailto:zemqueiroz@gmail.com?subject=My5%20project" linkText="Ask about My5" />
           <div className="device-world my5__world">
             <Phone src="/work/my5-2.png" alt="My5 circle screen" className="my5__side my5__side--a" small contain />
             <Phone src="/work/my5-live.jpg" alt="My5 circle and emotional check-in" className="my5__hero" />
