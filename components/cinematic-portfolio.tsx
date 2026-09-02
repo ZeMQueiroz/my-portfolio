@@ -90,8 +90,13 @@ function Desktop({ src, alt, className = "", violet = false, label, motionSrc }:
   );
 }
 
-function PortraitScreen({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
-  return <figure className={`portrait-screen ${className}`}><Image src={src} alt={alt} fill sizes="(max-width: 600px) 44vw, 360px" /></figure>;
+function PortraitScreen({ src, alt, className = "", motionSrc }: { src: string; alt: string; className?: string; motionSrc?: string }) {
+  return (
+    <figure className={`portrait-screen ${className}`}>
+      <Image src={src} alt={alt} fill sizes="(max-width: 600px) 44vw, 360px" />
+      {motionSrc ? <MotionVideo src={motionSrc} alt={alt} /> : null}
+    </figure>
+  );
 }
 
 function FloatingPhoto({ src, alt, className = "", contain = false }: { src: string; alt: string; className?: string; contain?: boolean }) {
@@ -554,7 +559,7 @@ export function CinematicPortfolio() {
             <FloatingPhoto src="/work/petricor-chair.jpg" alt="Petricor handcrafted chair" className="petricor__photo petricor__photo--chair" />
             <FloatingPhoto src="/work/petricor-pattern.webp" alt="Petricor geometric tabletop pattern study" className="petricor__photo petricor__photo--pattern" contain />
             <FloatingPhoto src="/work/petricor-sketch.webp" alt="Petricor chair construction drawing" className="petricor__photo petricor__photo--sketch" contain />
-            <Desktop src="/work/petricor-site.webp" alt="Petricor woodworking portfolio" className="showcase__screen showcase__screen--main petricor__screen petricor__screen--main" label="petricor.pt" />
+            <Desktop src="/work/petricor-site.webp" motionSrc="/work/petricor-motion.mp4" alt="Petricor portfolio moving between the workshop story and a finished geometric table" className="showcase__screen showcase__screen--main petricor__screen petricor__screen--main" label="petricor.pt" />
             <Desktop src="/work/petricor-craft.webp" alt="Petricor project and craft detail" className="showcase__screen petricor__screen petricor__screen--craft" label="Material · process · object" />
           </div>
           <div className="petricor__materials"><span className="petricor__material">wood</span><span className="petricor__material">grain</span><span className="petricor__material">joinery</span></div>
@@ -587,7 +592,7 @@ export function CinematicPortfolio() {
             <div className="weekline__gallery">
               <PortraitScreen src="/work/weekline-834.jpg" alt="Weekline projects view" className="weekline__screen weekline__screen--projects" />
               <PortraitScreen src="/work/weekline-832.jpg" alt="Weekline weekly report" className="weekline__screen weekline__screen--report" />
-              <PortraitScreen src="/work/weekline-830.jpg" alt="Weekline focus timer" className="weekline__screen weekline__screen--focus" />
+              <PortraitScreen src="/work/weekline-830.jpg" motionSrc="/work/weekline-motion.mp4" alt="Weekline moving from focus mode through the weekly report and project view" className="weekline__screen weekline__screen--focus" />
               <PortraitScreen src="/work/weekline-833.jpg" alt="Weekline export studio" className="weekline__screen weekline__screen--export" />
               <PortraitScreen src="/work/weekline-835.jpg" alt="Weekline motion background settings" className="weekline__screen weekline__screen--motion" />
               <PortraitScreen src="/work/weekline-836.jpg" alt="Weekline colour themes" className="weekline__screen weekline__screen--themes" />
@@ -605,7 +610,7 @@ export function CinematicPortfolio() {
           <div className="showcase__world ferias__world">
             <Desktop src="/work/ferias-year.webp" alt="Férias BV annual occupancy calendar" className="showcase__screen ferias__screen ferias__screen--year" label="Year · occupancy patterns" />
             <Desktop src="/work/ferias-dashboard.webp" alt="Férias BV operating dashboard" className="showcase__screen ferias__screen ferias__screen--dashboard" label="Dashboard · arrivals · financials" />
-            <Desktop src="/work/ferias-month.webp" alt="Férias BV visual booking calendar" className="showcase__screen showcase__screen--main ferias__screen ferias__screen--calendar" label="Monthly booking calendar" />
+            <Desktop src="/work/ferias-calendar-current.jpg" motionSrc="/work/ferias-motion.mp4" alt="Férias BV moving between the booking calendar, operating dashboard, and annual occupancy view" className="showcase__screen showcase__screen--main ferias__screen ferias__screen--calendar" label="Property operations · live overview" />
             <Desktop src="/work/ferias-properties.webp" alt="Férias BV property and rate management" className="showcase__screen ferias__screen ferias__screen--properties" label="Properties · rates · costs" />
             <Desktop src="/work/ferias-guests.webp" alt="Férias BV guest history and revenue view" className="showcase__screen ferias__screen ferias__screen--guests" label="Guests · stays · revenue" />
             <Desktop src="/work/ferias-timeline.webp" alt="Férias BV timeline calendar with booking details" className="showcase__screen ferias__screen ferias__screen--timeline" label="Timeline · booking details" />
@@ -622,7 +627,7 @@ export function CinematicPortfolio() {
           <ProjectCopy number="06" title="Downloads Organizer" category="Native macOS automation you can trust" description="A menu-bar utility that watches local folders and applies ordered rules to rename and move finished downloads. It starts in dry-run, ignores incomplete files, records every real action, and makes it undoable — with multi-folder support, reusable presets, rule previews, and local-only processing." contribution="Product strategy, native macOS design, and Swift engineering" decision="Preview first, wait for completed files, and make every real move visible and undoable." color="#79B8FF" href="mailto:zemqueiroz@gmail.com?subject=Downloads%20Organizer%20project" linkText="Ask about Downloads Organizer" />
           <div className="showcase__world downloads__world">
             <Desktop src="/work/downloads-general.jpg" alt="Downloads Organizer general settings" className="showcase__screen downloads__screen downloads__screen--general" label="General · local file processing" />
-            <Desktop src="/work/downloads-popover.jpg" alt="Downloads Organizer menu-bar utility" className="showcase__screen showcase__screen--main downloads__screen downloads__screen--popover" label="Downloads Organizer · live" />
+            <Desktop src="/work/downloads-popover.jpg" motionSrc="/work/downloads-motion.mp4" alt="Downloads Organizer moving from the menu-bar utility into general settings and automation rules" className="showcase__screen showcase__screen--main downloads__screen downloads__screen--popover" label="Downloads Organizer · live" />
             <Desktop src="/work/downloads-rules.jpg" alt="Downloads Organizer rules and preset packs" className="showcase__screen downloads__screen downloads__screen--rules" label="Rules · previews · presets" />
             <NativeStrip src="/work/downloads-preview.webp" alt="Downloads Organizer dry-run preview result" className="downloads__preview" />
           </div>
@@ -636,7 +641,7 @@ export function CinematicPortfolio() {
           <ProjectCopy number="07" title="My5" category="Private emotional network" description="A private emotional network for up to five trusted adults. Share one feeling with your circle or reach one person directly; they can answer with a bounded voice note, image, or short video — no public profiles, feed, followers, popularity metrics, or emotional-data advertising." contribution="Product strategy, trust model, mobile design, and engineering" decision="No chat or feed: one feeling, one bounded response, then the private moment disappears." color="#7A4DFF" href="mailto:zemqueiroz@gmail.com?subject=My5%20project" linkText="Ask about My5" />
           <div className="device-world my5__world">
             <Phone src="/work/my5-2.png" alt="My5 circle screen" className="my5__side my5__side--a" small contain />
-            <Phone src="/work/my5-live.jpg" alt="My5 circle and emotional check-in" className="my5__hero" />
+            <Phone src="/work/my5-live.jpg" motionSrc="/work/my5-motion.mp4" alt="My5 moving from a trusted circle into a two-tap feeling check-in and a bounded voice response" className="my5__hero" />
             <Phone src="/work/my5-3.png" alt="My5 check-in screen" className="my5__side my5__side--b" small contain />
           </div>
           <span className="depth-word my5__depth depth-word--a">private</span><span className="depth-word my5__depth depth-word--b">trusted</span><span className="depth-word my5__depth depth-word--c">quiet</span>
