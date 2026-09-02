@@ -21,12 +21,12 @@ function Kicker({ children, tone }: { children: React.ReactNode; tone?: string }
   return <div className="kicker" style={tone ? { color: tone } : undefined}>{children}</div>;
 }
 
-function Phone({ src, alt, className = "", small = false, contain = false, motionSrc }: { src: string; alt: string; className?: string; small?: boolean; contain?: boolean; motionSrc?: string }) {
+function MotionVideo({ src, alt }: { src: string; alt: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !motionSrc) return;
+    if (!video) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let visible = false;
@@ -53,17 +53,21 @@ function Phone({ src, alt, className = "", small = false, contain = false, motio
       reducedMotion.removeEventListener("change", handleMotionPreference);
       video.pause();
     };
-  }, [motionSrc]);
+  }, []);
 
+  return (
+    <video ref={videoRef} className="screen-video" muted loop playsInline preload="metadata" aria-label={alt}>
+      <source src={src} type="video/mp4" />
+    </video>
+  );
+}
+
+function Phone({ src, alt, className = "", small = false, contain = false, motionSrc }: { src: string; alt: string; className?: string; small?: boolean; contain?: boolean; motionSrc?: string }) {
   return (
     <div className={`phone ${small ? "phone--small" : ""} ${className}`}>
       <div className="phone__screen">
         <Image src={src} alt={alt} fill sizes={small ? "262px" : "292px"} className={contain ? "phone__image phone__image--contain" : "phone__image"} />
-        {motionSrc ? (
-          <video ref={videoRef} className="phone__video" muted loop playsInline preload="metadata" aria-label={alt}>
-            <source src={motionSrc} type="video/mp4" />
-          </video>
-        ) : null}
+        {motionSrc ? <MotionVideo src={motionSrc} alt={alt} /> : null}
       </div>
       <span className="phone__notch" />
       <span className="phone__glass" />
@@ -71,14 +75,17 @@ function Phone({ src, alt, className = "", small = false, contain = false, motio
   );
 }
 
-function Desktop({ src, alt, className = "", violet = false, label }: { src: string; alt: string; className?: string; violet?: boolean; label?: string }) {
+function Desktop({ src, alt, className = "", violet = false, label, motionSrc }: { src: string; alt: string; className?: string; violet?: boolean; label?: string; motionSrc?: string }) {
   return (
     <div className={`desktop ${violet ? "desktop--violet" : ""} ${className}`}>
       <div className="desktop__bar">
         <span /><span /><span />
         {label ? <b>{label}</b> : <i />}
       </div>
-      <div className="desktop__screen"><Image src={src} alt={alt} fill sizes="(max-width: 820px) 85vw, 900px" /></div>
+      <div className="desktop__screen">
+        <Image src={src} alt={alt} fill sizes="(max-width: 820px) 85vw, 900px" />
+        {motionSrc ? <MotionVideo src={motionSrc} alt={alt} /> : null}
+      </div>
     </div>
   );
 }
@@ -529,7 +536,7 @@ export function CinematicPortfolio() {
             <FloatingPhoto src="/work/casa-pool.jpg" alt="Casa da Piedade pool and landscape" className="casa__photo casa__photo--pool" />
             <FloatingPhoto src="/work/casa-heritage.jpg" alt="Casa da Piedade historic architectural detail" className="casa__photo casa__photo--heritage" />
             <Desktop src="/work/casa-cruzeiro-history.jpg" alt="Casa da Piedade history page" className="showcase__screen casa__screen casa__screen--history" label="History · 1524 → today" />
-            <Desktop src="/work/casa-cruzeiro-home.jpg" alt="Casa da Piedade website home page" className="showcase__screen showcase__screen--main casa__screen casa__screen--main" label="casadapiedade.pt" />
+            <Desktop src="/work/casa-motion-poster.webp" motionSrc="/work/casa-motion.mp4" alt="Casa da Piedade website moving from its historic home page into the family story" className="showcase__screen showcase__screen--main casa__screen casa__screen--main" label="casadapiedade.pt" />
             <Desktop src="/work/casa-cruzeiro-projects.jpg" alt="Casa da Piedade archive and digitisation project" className="showcase__screen casa__screen casa__screen--projects" label="Archive · transcription · digitisation" />
           </div>
           <div className="casa__year"><b>1524</b><span>A place with a memory longer than the interface.</span></div>
@@ -559,7 +566,7 @@ export function CinematicPortfolio() {
           <div className="scene-glow scene-glow--magenta" /><div className="ns__incoming" />
           <ProjectCopy number="03" title="NightShelf" category="A personal media library" description="A swipe-first place to discover, save, and track films, series, anime, and books. NightShelf separates the lightness of discovery from the commitment of a personal library, then brings progress, ratings, and meaningful recommendations back around what the person chose." contribution="Product strategy, interaction design, full-stack, and mobile development" decision="A swipe saves to Queue first; moving something into the Library remains a deliberate second step." align="right" color="#D48CFF" href="https://www.nightshelf.pt" linkText="Visit NightShelf" />
           <div className="device-world ns__world">
-            {[5,6,7,8,2].map((n,i)=><Image width={1170} height={2532} className={`ns__panel ns__panel--${i}`} src={`/work/ns-${n}.png`} alt="" key={`${n}-${i}`} />)}
+            {[1,6,7,8,5].map((n,i)=><Image width={1170} height={2532} className={`ns__panel ns__panel--${i}`} src={`/work/ns-${n}.png`} alt="" key={`${n}-${i}`} />)}
             <Phone src="/work/nightshelf-swipe-poster.webp" motionSrc="/work/nightshelf-swipe.mp4" alt="NightShelf Discover cards being swiped left to skip and right to save" className="ns__phone" />
             {[2,3,4].map((n,i)=><Image width={1170} height={2532} className={`ns__card ns__card--${i+1}`} src={`/work/ns-${n}.png`} alt={`NightShelf interface ${i+1}`} key={n} />)}
           </div>
