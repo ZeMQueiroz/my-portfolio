@@ -21,11 +21,49 @@ function Kicker({ children, tone }: { children: React.ReactNode; tone?: string }
   return <div className="kicker" style={tone ? { color: tone } : undefined}>{children}</div>;
 }
 
-function Phone({ src, alt, className = "", small = false, contain = false }: { src: string; alt: string; className?: string; small?: boolean; contain?: boolean }) {
+function Phone({ src, alt, className = "", small = false, contain = false, motionSrc }: { src: string; alt: string; className?: string; small?: boolean; contain?: boolean; motionSrc?: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !motionSrc) return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let visible = false;
+    const updatePlayback = () => {
+      if (visible && !reducedMotion.matches) {
+        void video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        updatePlayback();
+      },
+      { rootMargin: "180px", threshold: 0.08 },
+    );
+    const handleMotionPreference = () => updatePlayback();
+
+    observer.observe(video);
+    reducedMotion.addEventListener("change", handleMotionPreference);
+    return () => {
+      observer.disconnect();
+      reducedMotion.removeEventListener("change", handleMotionPreference);
+      video.pause();
+    };
+  }, [motionSrc]);
+
   return (
     <div className={`phone ${small ? "phone--small" : ""} ${className}`}>
       <div className="phone__screen">
         <Image src={src} alt={alt} fill sizes={small ? "262px" : "292px"} className={contain ? "phone__image phone__image--contain" : "phone__image"} />
+        {motionSrc ? (
+          <video ref={videoRef} className="phone__video" muted loop playsInline preload="metadata" aria-label={alt}>
+            <source src={motionSrc} type="video/mp4" />
+          </video>
+        ) : null}
       </div>
       <span className="phone__notch" />
       <span className="phone__glass" />
@@ -522,7 +560,7 @@ export function CinematicPortfolio() {
           <ProjectCopy number="03" title="NightShelf" category="A personal media library" description="A swipe-first place to discover, save, and track films, series, anime, and books. NightShelf separates the lightness of discovery from the commitment of a personal library, then brings progress, ratings, and meaningful recommendations back around what the person chose." contribution="Product strategy, interaction design, full-stack, and mobile development" decision="A swipe saves to Queue first; moving something into the Library remains a deliberate second step." align="right" color="#D48CFF" href="https://www.nightshelf.pt" linkText="Visit NightShelf" />
           <div className="device-world ns__world">
             {[5,6,7,8,2].map((n,i)=><Image width={1170} height={2532} className={`ns__panel ns__panel--${i}`} src={`/work/ns-${n}.png`} alt="" key={`${n}-${i}`} />)}
-            <Phone src="/work/ns-1.png" alt="NightShelf library" className="ns__phone" />
+            <Phone src="/work/nightshelf-swipe-poster.webp" motionSrc="/work/nightshelf-swipe.mp4" alt="NightShelf Discover cards being swiped left to skip and right to save" className="ns__phone" />
             {[2,3,4].map((n,i)=><Image width={1170} height={2532} className={`ns__card ns__card--${i+1}`} src={`/work/ns-${n}.png`} alt={`NightShelf interface ${i+1}`} key={n} />)}
           </div>
           <div className="ns__categories"><span className="ns__category">Anime</span><span className="ns__category">Film</span><span className="ns__category">Series</span><span className="ns__category">Books</span></div>
