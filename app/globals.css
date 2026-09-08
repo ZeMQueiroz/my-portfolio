@@ -15,6 +15,7 @@ a:focus-visible{outline:1px solid #9bc4ff;outline-offset:6px}
 .stage--far .stage { visibility:hidden; }
 .phone,.desktop,.portrait-screen,.floating-photo{backface-visibility:hidden;will-change:transform,opacity}
 .scene--hero{height:330vh}.scene--my5{height:720vh}.scene--night{height:740vh}.scene--week{height:650vh}.scene--casa{height:580vh}.scene--petricor{height:560vh}.scene--ferias{height:620vh}.scene--downloads{height:580vh}.scene--studio{height:360vh}.scene--contact{height:340vh}
+.portfolio[data-pacing="cinematic"] .scene--hero{height:430vh}.portfolio[data-pacing="cinematic"] .scene--my5{height:930vh}.portfolio[data-pacing="cinematic"] .scene--night{height:960vh}.portfolio[data-pacing="cinematic"] .scene--week{height:850vh}.portfolio[data-pacing="cinematic"] .scene--casa{height:760vh}.portfolio[data-pacing="cinematic"] .scene--petricor{height:730vh}.portfolio[data-pacing="cinematic"] .scene--ferias{height:810vh}.portfolio[data-pacing="cinematic"] .scene--downloads{height:760vh}.portfolio[data-pacing="cinematic"] .scene--studio{height:470vh}.portfolio[data-pacing="cinematic"] .scene--contact{height:445vh}
 .scene--hero .stage{background:radial-gradient(120% 85% at 50% 46%,#0a1220 0%,#060a12 46%,#030405 100%)}
 .scene--my5 .stage{background:radial-gradient(110% 80% at 50% 55%,#0b0810 0%,#060509 50%,#030405 100%)}
 .scene--night .stage{background:radial-gradient(120% 90% at 50% 50%,#120a1c 0%,#08050d 48%,#030405 100%)}

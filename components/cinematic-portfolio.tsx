@@ -152,8 +152,10 @@ export function CinematicPortfolio() {
     gsap.registerPlugin(ScrollTrigger);
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const coarse = window.matchMedia("(pointer: coarse)").matches;
+    const cinematicDisplay = window.innerWidth >= 1800 && window.innerHeight >= 980;
     const motion = reduced ? 0.24 : coarse ? 0.72 : 1.4;
     root.dataset.motion = reduced ? "reduced" : coarse ? "compact" : "full";
+    root.dataset.pacing = cinematicDisplay ? "cinematic" : "standard";
     let lenis: Lenis | null = null;
     let lenisTick: ((time: number) => void) | null = null;
 
@@ -168,7 +170,7 @@ export function CinematicPortfolio() {
     const ctx = gsap.context(() => {
       const sceneTimeline = (selector: string) => gsap.timeline({
         defaults: { ease: "none", force3D: true },
-        scrollTrigger: { trigger: selector, start: "top top", end: "bottom bottom", scrub: reduced ? false : coarse ? 0.35 : true, invalidateOnRefresh: true },
+        scrollTrigger: { trigger: selector, start: "top top", end: "bottom bottom", scrub: reduced ? false : coarse ? 0.35 : cinematicDisplay ? 0.6 : true, invalidateOnRefresh: true },
       });
 
       const hero = sceneTimeline("#hero");
